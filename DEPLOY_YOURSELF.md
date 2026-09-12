@@ -81,7 +81,7 @@ Recommended values:
 
 Never put API keys or the Turnstile secret in `NEXT_PUBLIC_*` variables, source files, Git, or the browser.
 
-## 4. Build and deploy
+## 4. Build and deploy from your computer
 
 After `wrangler.jsonc` and the production values are ready:
 
@@ -100,7 +100,47 @@ Remove-Item -LiteralPath .wrangler\deploy -Recurse -Force
 npm run deploy:selfhost
 ```
 
-## 5. Verify the live site
+## 5. Deploy through GitHub Actions
+
+The `Deploy Swaraagam` workflow runs automatically for every push or merge to
+`main`. It can also be started manually when an explicit redeployment is needed.
+Configure the following values under **GitHub repository → Settings → Secrets
+and variables → Actions**:
+
+Repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`: a scoped Cloudflare API token allowed to edit Workers
+  and D1 for your account;
+- `CLOUDFLARE_ACCOUNT_ID`: your Cloudflare account ID.
+
+Repository variables:
+
+- `CLOUDFLARE_D1_DATABASE_ID`: the ID returned when you created
+  `swaraagam-enquiries`;
+- `NEXT_PUBLIC_SITE_URL`: the complete production origin, without a trailing
+  slash;
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: the production Turnstile site key.
+
+Keep the Worker runtime secrets from section 3 in Cloudflare. Do not duplicate
+the Resend key, Turnstile secret, email addresses, rate-limit salt, or allowed
+origins in GitHub.
+
+For the normal release flow:
+
+1. Commit changes on a `feature/` branch and open a pull request into `main`.
+2. Wait for the pull-request quality checks to pass.
+3. Merge the pull request. The push to `main` validates, migrates, and deploys
+   automatically.
+
+For an explicit redeployment, open the repository's **Actions** tab, select
+**Deploy Swaraagam**, choose the branch or commit, and click **Run workflow**.
+
+The workflow installs the locked dependencies, runs `npm run check`, creates an
+ephemeral `wrangler.jsonc` from the safe template, applies pending D1 migrations,
+and deploys the prebuilt Worker. Concurrent production deployments are serialized
+so one release cannot overtake another.
+
+## 6. Verify the live site
 
 1. Open the deployed URL and submit a harmless test request.
 2. Confirm Turnstile accepts it and the message arrives at `ENQUIRY_TO_EMAIL`.
@@ -118,19 +158,24 @@ npx wrangler tail --config wrangler.jsonc
 
 `GET /api/enquiries` intentionally returns `405`; enquiries are accepted only with the validated `POST` flow.
 
-## Optional: put the copy in your own Git repository
+## 7. Keep the source in GitHub
 
-The handoff folder is intentionally not a Git repository. After reviewing the files and confirming no real secrets are present:
+The deployment workflow runs from GitHub, so commit changes only after reviewing
+them and confirming no real secrets are present:
 
 ```powershell
-git init
+git switch -c feature/update-homepage
 git add .
-git commit -m "Initial Swaraagam self-hosting source"
+git commit -m "Update homepage content"
+git push --set-upstream origin feature/update-homepage
 ```
 
-Create a private repository on your Git provider and push this commit. Keep `.env.local` and any `.dev.vars` files out of the repository; the included `.gitignore` already ignores environment files. `wrangler.jsonc` contains your Worker and D1 identifiers, not API secrets, so commit it only if you are comfortable keeping that configuration in the repository.
+Push the commit to a branch named with the `feature/` prefix, open a pull request,
+and merge it after the quality checks pass. Keep `.env.local`, `.dev.vars`, and
+the generated `wrangler.jsonc` out of commits; GitHub Actions recreates the
+Wrangler file for each deployment.
 
-## 6. Add a custom domain later
+## 8. Add a custom domain later
 
 You can first deploy on the `*.workers.dev` hostname. When you own a domain, add it to the Worker in Cloudflare, then:
 
@@ -148,9 +193,9 @@ Do not deploy only `dist/client` to a static host: the form's `/api/enquiries` r
 - Restrict Cloudflare and Resend dashboard access to trusted operators, enable MFA, and rotate secrets if an account or repository is exposed.
 - This website is not a crisis service. Keep the emergency-resource disclaimer visible and maintain an offline process for urgent safeguarding concerns.
 
-## Files added for independent deployment
+## Files used for independent deployment
 
 - `wrangler.example.jsonc` — safe template; copy it to `wrangler.jsonc` and add your D1 ID.
-- `.openai/hosting.json` — sanitized local build metadata with no internal project ID.
+- `vite.config.ts` — supplies the local `DB` binding used by the development server.
 - `.env.example` — non-secret local configuration template.
 - `package.json` — includes the `deploy:selfhost` command.

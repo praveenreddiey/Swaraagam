@@ -75,6 +75,11 @@ your own D1 database, configures Worker secrets, and publishes both the React
 assets and `/api/enquiries` route from your account. Runtime secrets are entered
 with `wrangler secret put` and are never stored in this repository.
 
+After the one-time Cloudflare setup, every push or merge to `main` runs the full
+quality checks and then uses the **Deploy Swaraagam** GitHub Actions workflow to
+migrate and publish automatically. Pull requests run quality checks without
+deploying, and the deployment workflow can still be started manually on demand.
+
 You can start with the free `*.workers.dev` hostname. When you own a domain,
 attach it to the Worker and keep `NEXT_PUBLIC_SITE_URL`, Turnstile hostnames,
 and `ALLOWED_ORIGINS` aligned with the live origin.
