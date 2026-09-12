@@ -12,7 +12,7 @@ steps for this standalone copy.
 ## Technology
 
 - React and TypeScript through Vinext
-- Cloudflare Sites and Workers
+- Cloudflare Workers
 - Cloudflare D1 with Drizzle migrations
 - Cloudflare Turnstile for server-verified spam protection
 - Resend for practice-inbox notifications
@@ -65,12 +65,16 @@ data retention, deployment checks and the remaining custom-domain work.
 - `db/`: D1 schema and persistence helpers
 - `worker/`: Cloudflare entry point and security headers
 - `tests/`: production-build integration tests
-- `.openai/hosting.json`: logical Sites resources only
+- `wrangler.example.jsonc`: safe template for your Worker and D1 binding
 
 ## Deployment
 
-Sites applies the packaged D1 migration and injects the logical `DB` binding.
-Runtime secrets are managed through Sites and never stored in the repository.
-The primary public origin is `https://swaraagam.com`. The application uses
-`NEXT_PUBLIC_SITE_URL` when supplied and otherwise falls back to that canonical
-origin; keep any deployment override aligned with the live domain.
+Deploy the Worker yourself with Wrangler by following
+[DEPLOY_YOURSELF.md](./DEPLOY_YOURSELF.md). The deployment creates and migrates
+your own D1 database, configures Worker secrets, and publishes both the React
+assets and `/api/enquiries` route from your account. Runtime secrets are entered
+with `wrangler secret put` and are never stored in this repository.
+
+You can start with the free `*.workers.dev` hostname. When you own a domain,
+attach it to the Worker and keep `NEXT_PUBLIC_SITE_URL`, Turnstile hostnames,
+and `ALLOWED_ORIGINS` aligned with the live origin.

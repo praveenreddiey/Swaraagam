@@ -101,7 +101,7 @@ export default function PrivacyPage() {
         <h2>Service providers</h2>
         <p>
           Swaraagam uses carefully selected providers to operate this website:
-          Cloudflare Sites and D1 for hosting and secure request storage,
+          Cloudflare Workers and D1 for hosting and secure request storage,
           Cloudflare Turnstile for anti-spam verification, and Resend for email
           notification. These providers process only the information needed to deliver
           their services and may process data in jurisdictions outside India
