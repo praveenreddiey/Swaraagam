@@ -91,7 +91,9 @@ $env:NEXT_PUBLIC_TURNSTILE_SITE_KEY = "your-turnstile-site-key"
 npm run deploy:selfhost
 ```
 
-`deploy:selfhost` builds `dist/server` and `dist/client`, then deploys them with `wrangler.jsonc`. It uses the prebuilt Worker output, so the command includes `--no-bundle`.
+`deploy:selfhost` builds `dist/server` and `dist/client`, then deploys them with
+`wrangler.jsonc`. Wrangler performs the final packaging step so that generated
+Vinext modules, including the RSC asset manifest, are included in the upload.
 
 If Wrangler reports that it is using a generated `.wrangler/deploy/config.json`, remove only that generated folder and rerun the command:
 
@@ -137,8 +139,8 @@ For an explicit redeployment, open the repository's **Actions** tab, select
 
 The workflow installs the locked dependencies, runs `npm run check`, creates an
 ephemeral `wrangler.jsonc` from the safe template, applies pending D1 migrations,
-and deploys the prebuilt Worker. Concurrent production deployments are serialized
-so one release cannot overtake another.
+and packages and deploys the prebuilt Worker. Concurrent production deployments
+are serialized so one release cannot overtake another.
 
 ## 6. Verify the live site
 
