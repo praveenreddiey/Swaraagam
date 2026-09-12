@@ -1,5 +1,7 @@
 # Swaraagam website
 
+Counselling, arts-based therapy and music-informed support.
+
 Public website and secure enquiry service for Swaraagam, a creative
 therapeutic practice based in Mumbai with online services across India.
 
