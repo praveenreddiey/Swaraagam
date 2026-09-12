@@ -21,6 +21,9 @@ test("builds a standalone Worker without Sites deployment metadata", async () =>
   const wranglerTemplate = await readFile(wranglerTemplatePath, "utf8");
   assert.match(wranglerTemplate, /"main": "\.\/dist\/server\/index\.js"/);
   assert.match(wranglerTemplate, /"binding": "DB"/);
+  assert.match(wranglerTemplate, /"workers_dev": false/);
+  assert.match(wranglerTemplate, /"preview_urls": false/);
+  assert.doesNotMatch(wranglerTemplate, /"routes?":/);
 });
 
 test("deploys main only after validation and keeps manual deployment available", async () => {

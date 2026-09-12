@@ -44,6 +44,13 @@ npx wrangler d1 migrations apply swaraagam-enquiries --remote
 
 The `images` binding in `wrangler.jsonc` is used by the Worker for `next/image` optimization. Enable the Cloudflare Images binding for this Worker, or replace the two small logo uses with plain images before deploying if you do not want image transformations.
 
+After the first Worker deployment succeeds, attach the production hostname in
+**Cloudflare dashboard → Workers & Pages → your Worker → Settings → Domains &
+Routes → Add → Custom Domain**. The Wrangler template deliberately leaves
+`routes` unset so the dashboard remains the source of truth for custom domains.
+It disables the public `workers.dev` and preview routes once a custom domain is
+attached.
+
 ## 3. Configure production values
 
 ### Build-time public values
