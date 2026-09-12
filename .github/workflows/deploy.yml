@@ -82,4 +82,4 @@ jobs:
           wranglerVersion: 4.125.0
           command: |
             d1 migrations apply swaraagam-enquiries --remote --config wrangler.jsonc
-            deploy --config wrangler.jsonc --no-bundle
+            deploy --config wrangler.jsonc

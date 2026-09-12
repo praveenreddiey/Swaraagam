@@ -3,6 +3,7 @@ import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const distributionDirectory = new URL("../dist/", import.meta.url);
+const packageJsonPath = new URL("../package.json", import.meta.url);
 const wranglerTemplatePath = new URL("../wrangler.example.jsonc", import.meta.url);
 const deploymentWorkflowPath = new URL(
   "../.github/workflows/deploy.yml",
@@ -24,6 +25,7 @@ test("builds a standalone Worker without Sites deployment metadata", async () =>
 
 test("deploys main only after validation and keeps manual deployment available", async () => {
   const deploymentWorkflow = await readFile(deploymentWorkflowPath, "utf8");
+  const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8"));
 
   assert.match(deploymentWorkflow, /^\s{2}push:\s*$/mu);
   assert.match(deploymentWorkflow, /^\s{4}branches:\s*\[main\]\s*$/mu);
@@ -39,7 +41,12 @@ test("deploys main only after validation and keeps manual deployment available",
   assert.ok(validationStepIndex < deploymentStepIndex);
 
   assert.match(deploymentWorkflow, /d1 migrations apply .+ --remote/);
-  assert.match(deploymentWorkflow, /deploy --config wrangler\.jsonc --no-bundle/);
+  assert.match(deploymentWorkflow, /deploy --config wrangler\.jsonc/);
+  assert.doesNotMatch(deploymentWorkflow, /wrangler\.jsonc --no-bundle/);
+  assert.equal(
+    packageJson.scripts["deploy:selfhost"],
+    "npm run build && wrangler deploy --config wrangler.jsonc",
+  );
 });
 
 test("validates pull requests without duplicating checks on main", async () => {

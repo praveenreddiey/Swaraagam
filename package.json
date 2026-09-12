@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "deploy:selfhost": "npm run build && wrangler deploy --config wrangler.jsonc --no-bundle",
+    "deploy:selfhost": "npm run build && wrangler deploy --config wrangler.jsonc",
     "start": "vinext start",
     "test": "npm run build && node --test tests/deployment-config.test.mjs tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
