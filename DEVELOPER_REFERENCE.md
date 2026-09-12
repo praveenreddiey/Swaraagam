@@ -28,7 +28,7 @@ There is currently no application database in use. Enquiries are emailed and are
 | Thymeleaf template plus browser JavaScript | React component written in JSX/TSX | `app/page.tsx` |
 | Base page template | root layout | `app/layout.tsx` |
 | application properties/environment variables | `.env.local` and deployment secrets | `.env.example` |
-| JPA entity/schema | Drizzle table definition | `db/schema.ts` (currently empty) |
+| JPA entity/schema | Drizzle table definition | `db/schema.ts` |
 | application entry/servlet adapter | Worker `fetch()` entry point | `worker/index.ts` |
 | JUnit | Node's built-in test runner | `tests/rendered-html.test.mjs` |
 
@@ -55,23 +55,22 @@ Node.js `>=22.13.0` is required.
 .
 ├── app/
 │   ├── api/enquiries/route.ts  # Server-side enquiry endpoint
-│   ├── chatgpt-auth.ts         # Optional auth helpers; not used by the home page
 │   ├── globals.css             # Design system, layout, responsive rules, animation
 │   ├── layout.tsx              # Root HTML shell and SEO/social metadata
 │   └── page.tsx                # Home page, interaction state, form submission
 ├── db/
 │   ├── index.ts                # Creates a Drizzle client if D1 is enabled
-│   └── schema.ts               # Empty; no active database tables
+│   └── schema.ts               # Enquiry and shared rate-limit tables
 ├── drizzle/                    # Generated migration metadata
 ├── examples/d1/                # Example only, not part of the live route flow
 ├── public/                     # Static files served by URL from the site root
 ├── tests/rendered-html.test.mjs# Render and API behaviour tests
 ├── worker/index.ts             # Cloudflare Worker entry and image optimization
-├── .openai/hosting.json        # Hosting project and optional binding declarations
 ├── .env.example                # Environment variable template; contains no real secrets
 ├── drizzle.config.ts           # Drizzle migration generator configuration
 ├── next.config.ts              # Next-compatible configuration
-├── vite.config.ts              # vinext, Sites, and Cloudflare build plugins
+├── vite.config.ts              # vinext and local Cloudflare build configuration
+├── wrangler.example.jsonc      # Standalone Worker deployment template
 ├── package.json                # Dependencies and commands
 └── PRODUCTION_READINESS.md     # Launch, privacy, security, and operations checklist
 ```
@@ -429,7 +428,7 @@ Create a folder below `app/` containing `page.tsx`. For example, `app/privacy/pa
 Do this only when the product and privacy requirements explicitly call for it:
 
 1. Declare tables in `db/schema.ts`.
-2. Set the D1 binding name, normally `DB`, in `.openai/hosting.json` or the deployment control plane.
+2. Keep the D1 binding name as `DB` in `wrangler.jsonc`.
 3. Run `npm run db:generate` and review the generated migration.
 4. Import `getDb()` only from server code.
 5. Add retention, deletion, authorization, migration, backup, and privacy handling.
@@ -447,7 +446,7 @@ Do not casually persist enquiry notes. The current design intentionally avoids a
 - **Using browser-only globals on the server:** `window`, `document`, and `localStorage` exist only in the browser.
 - **Forgetting cleanup:** observers, event listeners, timers, and third-party widgets should be removed by an effect cleanup function.
 - **Changing generated output:** edit source files, then rebuild; never patch `dist/` or `.vinext/`.
-- **Assuming database scaffolding means storage:** no active route imports `getDb()`, and the current schema is empty.
+- **Assuming email failure means the request was lost:** valid enquiries are saved to D1 before Resend is called; inspect `notification_status` when delivery fails.
 
 ## 14. Debugging guide
 
@@ -489,16 +488,15 @@ Inspect the element's computed styles and find the winning rule. Then search `ap
 `vite.config.ts` combines:
 
 - the vinext application plugin;
-- the Sites build plugin;
 - the Cloudflare Vite plugin and local Worker bindings.
 
-`.openai/hosting.json` identifies the hosting project and declares optional D1/R2 binding names. Both bindings are currently `null`, which matches the no-database/no-object-storage design.
+Create `wrangler.jsonc` from `wrangler.example.jsonc` for production. It declares
+the Worker entry point, static assets, image binding, and the D1 `DB` binding.
+Deploy it from your own Cloudflare account with `npm run deploy:selfhost`.
 
 Deployment configuration and secrets belong in the hosting environment. For go-live requirements, security hardening, privacy operations, provider setup, and the launch checklist, read `PRODUCTION_READINESS.md`.
 
-## 16. Optional and inactive code
-
-`app/chatgpt-auth.ts` contains safe helpers for optional Sign in with ChatGPT. The current public home page does not import these helpers and does not require sign-in.
+## 16. Inactive example code
 
 The `examples/d1/` directory demonstrates D1 usage but does not automatically create routes in the active application. Treat it as reference material.
 

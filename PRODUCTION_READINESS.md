@@ -50,9 +50,9 @@ raw IP address. Old rate-limit rows are automatically removed.
 
 If email notifications are delayed or unavailable:
 
-1. Treat D1 as the authoritative list of received web enquiries.
+1. Treat your Cloudflare D1 database as the authoritative list of received web enquiries.
 2. Review records where `notification_status != 'accepted'`, using restricted
-   Cloudflare/Sites database access only.
+   Cloudflare dashboard access only.
 3. Contact the person through the dedicated practice mailbox. Do not copy their
    note into tickets, chat messages, monitoring tools or personal accounts.
 4. Record resolution through the approved database tooling and investigate the
@@ -73,18 +73,17 @@ ORDER BY created_at ASC;
 Only authorised practice personnel should run this query. Exported enquiry data
 must not be kept on unmanaged devices.
 
-## Current live-domain setup
+## Self-hosted deployment checklist
 
-- Primary public URL: `https://swaraagam.com`
-- `swaraagam.com` and `www.swaraagam.com` are attached to Sites with active SSL.
-- Both hostnames serve the same deployment and declare the apex URL as canonical.
+- The Worker is deployed from your own Cloudflare account with Wrangler.
+- Your own D1 database is bound as `DB` and migrations are applied remotely.
+- Turnstile accepts every hostname that serves the Worker.
+- Resend is configured with a verified sender and the practice inbox as the recipient.
+- The Worker `workers.dev` URL is the temporary public address until a custom domain is attached.
 - Appointment requests are completed natively on the site without an external scheduling redirect.
-- Turnstile accepts the apex, `www` and the managed Sites hostname.
-- Resend is configured to send from `enquiries@swaraagam.com`.
 
-The managed Sites hostname may remain technically reachable, but it is not the
-public or canonical address. Keep the durable website form as the primary
-contact route and confirm that the practice mailbox is actively monitored.
+Keep the live hostname, Turnstile hostnames, `ALLOWED_ORIGINS`, and
+`NEXT_PUBLIC_SITE_URL` aligned after every deployment.
 
 ## Runtime configuration
 
@@ -100,8 +99,8 @@ contact route and confirm that the practice mailbox is actively monitored.
 | `RATE_LIMIT_SALT` | Long random secret used to hash client identifiers. |
 | `ALLOWED_ORIGINS` | Additional browser origins permitted to submit. |
 
-The `.openai/hosting.json` file declares the logical D1 binding `DB`. Real
-secrets belong in Sites runtime configuration and must never be committed.
+`wrangler.jsonc` declares the D1 binding `DB`. Real secrets belong in Worker
+secret storage and must never be committed.
 
 ## Implemented safeguards
 
@@ -149,17 +148,15 @@ Never use a real client's information for a smoke test.
 
 ## Post-launch checks and remaining hardening
 
-Domain attachment, SSL, canonical metadata, Turnstile hostnames and the Resend
-sender address are configured. Continue with these operational checks:
+After the first self-hosted deployment, continue with these operational checks:
 
-1. Keep `https://swaraagam.com` aligned across site metadata, the sitemap,
+1. Keep the live Worker hostname aligned across site metadata, the sitemap,
    robots, Turnstile and allowed-origin configuration after every deployment.
-2. Decide whether `www` should redirect to the apex when the hosting platform
-   supports it; it currently serves the same content with the apex marked canonical.
-3. Confirm `enquiries@swaraagam.com` is an active monitored mailbox.
+2. When you add a custom domain, decide whether `www` redirects to the apex.
+3. Confirm the configured practice mailbox is actively monitored.
 4. Confirm SPF, DKIM and DMARC are valid for the Resend sending domain.
 5. Add or verify Cloudflare zone-level WAF/rate rules as defence in depth.
-6. Verify the domain in search-engine webmaster tools.
+6. Verify the domain in search-engine webmaster tools after domain attachment.
 7. Run a D1-plus-email smoke test on the live hostname after each material release.
 
 The website copy and policies are practical drafts, not legal or professional

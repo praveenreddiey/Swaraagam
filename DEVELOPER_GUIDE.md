@@ -31,7 +31,9 @@ Cloudflare Worker runtime
 
 The page is not a Java SPA talking to a separate Spring Boot service. The UI and API route live in the same repository and are built into one Cloudflare application.
 
-The repository includes Drizzle ORM and D1 scaffolding, but **the active application does not use a database**. An enquiry is validated and emailed. It is not saved by this application.
+The application uses Drizzle ORM with Cloudflare D1. A valid enquiry is stored
+before the application asks Resend to send its notification, so a temporary
+email-provider failure does not discard the request.
 
 ## 2. The three execution environments
 
@@ -64,13 +66,12 @@ new project 4/
 │   ├── api/
 │   │   └── enquiries/
 │   │       └── route.ts       # Server HTTP endpoint
-│   ├── chatgpt-auth.ts        # Optional, currently unused auth helpers
 │   ├── globals.css            # Theme, layout, components, breakpoints, animation
 │   ├── layout.tsx             # Root HTML wrapper and SEO metadata
 │   └── page.tsx               # Home page UI and all browser interactions
 ├── db/
 │   ├── index.ts               # Optional Drizzle client factory
-│   └── schema.ts              # Empty: no application tables
+│   └── schema.ts              # Enquiry and shared rate-limit tables
 ├── drizzle/                   # Migration metadata
 ├── examples/d1/               # Reference example, not an active app route
 ├── public/                    # Static assets available from the site root
@@ -78,13 +79,13 @@ new project 4/
 │   └── rendered-html.test.mjs # Built-Worker integration tests
 ├── worker/
 │   └── index.ts               # Cloudflare Worker entry point
-├── .openai/hosting.json       # Hosting project and optional bindings
 ├── .env.example               # Safe configuration template
 ├── drizzle.config.ts          # Migration generator configuration
 ├── next.config.ts             # Next-compatible options
 ├── package.json               # Dependencies, metadata, and npm commands
 ├── tsconfig.json              # TypeScript compiler rules
-└── vite.config.ts             # Build and Cloudflare integration
+├── vite.config.ts             # Build and local Cloudflare integration
+└── wrangler.example.jsonc     # Standalone Worker deployment template
 ```
 
 Do not manually edit generated/local directories:
@@ -998,10 +999,11 @@ This file combines roles that Java projects often split across a build file and 
 `vite.config.ts` registers:
 
 1. `vinext()` for the Next-compatible application;
-2. the Sites build plugin;
-3. Cloudflare's Vite plugin for Worker execution and local binding simulation.
+2. Cloudflare's Vite plugin for Worker execution and local binding simulation.
 
-The configuration reads D1/R2 binding declarations from `.openai/hosting.json`. Both are currently null.
+The local configuration declares the `DB` binding directly. Production bindings
+come from `wrangler.jsonc`, which you create from `wrangler.example.jsonc` before
+deploying with your own Cloudflare account.
 
 Local Wrangler/Miniflare state is forced into project-local `.wrangler/` files. A macOS sandbox special case switches file watching to polling; it does not affect ordinary Windows development.
 
@@ -1020,36 +1022,26 @@ Files in `public/` are served from the root URL. For example, `public/favicon.sv
 
 The metadata refers to `/og.png`. When maintaining social preview metadata, confirm the referenced file actually exists and has the declared dimensions.
 
-## 17. Database code: present but inactive
+## 17. Database-backed enquiries
 
-`db/index.ts` creates a Drizzle client around `env.DB`, but only when code calls `getDb()` and the platform supplies a D1 binding.
+`db/index.ts` creates a Drizzle client around the `env.DB` binding.
+`db/schema.ts` defines the enquiry and rate-limit tables, and
+`app/api/enquiries/route.ts` stores a validated appointment request before it
+attempts the Resend notification.
 
-`db/schema.ts` exports no tables. `.openai/hosting.json` declares no D1 binding. The enquiry route imports neither database file.
-
-Therefore:
-
-```text
-Enquiry submission ≠ database insert
-```
-
-Enabling persistence is not merely adding a table. For therapy enquiries, it would require decisions about purpose limitation, authorization, retention, deletion, backups, incident handling, migrations, data subject requests, and jurisdiction-specific review.
-
-If a non-sensitive feature later needs D1:
+When the schema changes:
 
 1. define Drizzle tables in `db/schema.ts`;
-2. declare/inject the `DB` binding;
-3. generate and review a migration with `npm run db:generate`;
-4. apply migrations through the supported hosting workflow;
-5. import `getDb()` only from server code;
-6. add tests and operational procedures.
+2. generate and review a migration with `npm run db:generate`;
+3. apply the migration to the remote D1 database before deploying;
+4. import `getDb()` only from server code;
+5. add tests and operational procedures.
 
-## 18. Optional authentication code
+## 18. Authentication
 
-`app/chatgpt-auth.ts` can read hosting-injected identity headers and generate safe sign-in/sign-out return paths. The public home page does not import it.
-
-It includes protections against unsafe external return URLs and redirects back into reserved authentication routes. Identity headers establish a user identity, but they do not automatically prove workspace membership or application authorization.
-
-Do not add authentication to the public enquiry path unless the product requirement changes. Authentication and authorization are separate concerns.
+The public website does not implement visitor accounts or sign-in. Do not add
+authentication to the public enquiry path unless the product requirement
+changes. Authentication and authorization are separate concerns.
 
 ## 19. Local development: exact workflow
 
@@ -1365,11 +1357,12 @@ The current application is small enough to understand in a few files. As it grow
 - confirming the social preview image referenced by metadata exists;
 - adding CI for lint, build, tests, dependency scanning, and deployment checks.
 
-These are evolution paths, not permission to store sensitive form data or add unnecessary client dependencies.
+These are evolution paths, not permission to expand the stored enquiry data or add unnecessary client dependencies.
 
 ## 26. Operational and privacy model
 
-“Not stored in the website database” does not mean “no copies exist.” Email delivery can create copies in:
+Enquiries are stored in D1 for the documented retention period. Email delivery
+also creates copies in:
 
 - Resend systems;
 - the recipient mailbox;
