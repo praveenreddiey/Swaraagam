@@ -5,7 +5,6 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { ModalitiesSection } from "@/components/home/ModalitiesSection";
 import { ProcessSection } from "@/components/home/ProcessSection";
 import { RevealOnScroll } from "@/components/home/RevealOnScroll";
-import { RhythmRibbon } from "@/components/home/RhythmRibbon";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -23,7 +22,6 @@ export default function Home() {
       <SiteHeader />
       <main id="main-content">
         <HeroSection />
-        <RhythmRibbon />
         <AboutSection />
         <ProcessSection />
         <ModalitiesSection />

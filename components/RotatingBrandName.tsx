@@ -10,10 +10,17 @@ const BRAND_NAMES = [
   { language: "Tamil", lang: "ta", text: "ஸ்வராகம்" },
 ] as const;
 
-export function RotatingBrandName() {
+interface RotatingBrandNameProps {
+  animated?: boolean;
+}
+
+/** Show Swaraagam's multilingual name, optionally rotating through each script. */
+export function RotatingBrandName({ animated = true }: RotatingBrandNameProps = {}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
+    if (!animated) return;
+
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
@@ -24,7 +31,7 @@ export function RotatingBrandName() {
     }, 3000);
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [animated]);
 
   return (
     <strong className="brand-name-rotator">

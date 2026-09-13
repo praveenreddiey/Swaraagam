@@ -8,7 +8,7 @@ export function HeroSection() {
       <div className="hero-orb hero-orb-two" aria-hidden="true" />
       <HeroArtwork />
       <div className="page-shell hero-grid">
-        <div className="hero-copy" data-reveal>
+        <div className="hero-copy">
           <p className="hero-kicker">A place for your whole self</p>
           <h1 id="hero-title" className="hero-title">
             Rediscover your
@@ -24,7 +24,7 @@ export function HeroSection() {
           </p>
         </div>
 
-        <div className="hero-side" data-reveal>
+        <div className="hero-side">
           <p className="hero-side-label">Creative therapeutic practice</p>
           <p className="hero-side-copy">
             Counselling, arts-based therapy and music-informed support,

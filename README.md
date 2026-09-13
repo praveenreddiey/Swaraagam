@@ -88,10 +88,12 @@ and `ALLOWED_ORIGINS` aligned with the live origin.
 
 ## Visual language
 
-Swaraagam uses self-hosted Fraunces and Manrope fonts, an original abstract
-rhythm illustration, a restrained moving text ribbon, and progressive section
-reveals. Motion is decorative: content remains available without JavaScript and
-animation is disabled when a visitor requests reduced motion.
+Swaraagam uses self-hosted Fraunces and Manrope fonts, an original paper-collage
+visual language, a green rhythm ribbon, and a compact charcoal footer panel. The
+header keeps the English Swaraagam wordmark clear; the hero remains static while
+lower-page motion adds energy on scroll and hover. Modality cards start compact
+and reveal their descriptions in an expanded face on hover, click or keyboard
+activation. All animation is disabled when a visitor requests reduced motion.
 
 The design intentionally does not reuse third-party website copy or imagery.
 See [docs/VISUAL_LANGUAGE.md](./docs/VISUAL_LANGUAGE.md) before changing colors,

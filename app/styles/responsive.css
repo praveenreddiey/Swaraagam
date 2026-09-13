@@ -24,7 +24,6 @@
   .about-copy { max-width: 600px; padding: 0; }
   .modalities-section { padding: 60px 0 64px; }
   .section-heading-row { display: block; }
-  .section-intro { margin: 22px 0 0; }
   .modalities-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 32px; }
   .modality-card { min-height: 0; }
   .process-list { grid-template-columns: 1fr; gap: 0; }
@@ -50,9 +49,7 @@
     backdrop-filter: blur(14px);
   }
   .mobile-booking-bar .button { width: 100%; min-height: 48px; }
-  .mobile-booking-bar ~ .site-footer { padding-bottom: 92px; }
-  .footer-main { grid-template-columns: 1fr 1fr; }
-  .footer-main > p { display: none; }
+  .mobile-booking-bar ~ .site-footer { padding-bottom: 72px; }
   .legal-hero { padding: 62px 0 44px; }
   .legal-content { padding: 48px 0 64px; }
 }
@@ -75,7 +72,6 @@
 
   .process-quote { align-items: flex-start; margin-top: 36px; padding-inline: 4px; }
   .process-quote p { text-align: left; }
-  .modalities-note { margin-top: 24px; text-align: left; }
   .booking-closing { margin-top: 42px; padding-top: 24px; text-align: left; }
   .about-grid { gap: 30px; }
   .philosophy-card { padding: 18px; }
@@ -89,11 +85,8 @@
   .faq-list summary { min-height: 68px; font-size: 19px; }
   .faq-list details > p { margin-right: 0; }
   .booking-section { padding: 52px 0; }
-  .site-footer { padding-top: 38px; }
-  .footer-main { grid-template-columns: 1fr; gap: 32px; }
-  .footer-main nav { max-width: 260px; }
-  .crisis-note { margin-top: 4px; }
-  .footer-bottom { grid-template-columns: 1fr auto; }
+  .site-footer > .page-shell { padding-top: 12px; }
+  .footer-bottom { min-height: 58px; }
   .footer-bottom > div { display: none; }
   .legal-main { padding-top: 76px; }
   .legal-hero { padding: 48px 0 38px; }

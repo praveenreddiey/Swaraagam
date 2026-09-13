@@ -6,14 +6,15 @@ expected from a counselling practice.
 
 ## Design principles
 
-1. Calm before novelty. Movement must never compete with service information or
-   the appointment form.
+1. Calm entry, expressive journey. The header keeps the English wordmark clear
+   while the hero remains static; playful movement begins lower on the page and
+   never competes with the form.
 2. Expression without imitation. Use Swaraagam's own rhythm, breath, music and
    creative-practice motifs rather than copying another practice's assets.
 3. Content without animation. Every word and action remains available when
    JavaScript is unavailable or reduced motion is requested.
-4. Restraint through reuse. Extend the existing tokens before introducing a new
-   color, timing value or visual pattern.
+4. Energy through reuse. Repeat a small family of paper shapes, saturated color
+   tokens and motion timings instead of inventing a new effect for each section.
 
 ## Typography
 
@@ -23,33 +24,59 @@ expected from a counselling practice.
   pairs cleanly with the more expressive headings.
 - Both families are self-hosted from `public/fonts/`. Their SIL Open Font
   License files must remain beside the font assets.
-- Indian-script brand-name rotations continue to use the established system
-  fallbacks because the Latin font files do not contain those scripts.
+- The multilingual wordmark component remains available for a future language
+  pass, using established system fallbacks because the Latin font files do not
+  contain those scripts.
 
 ## Color
 
-The canonical tokens live in `app/styles/foundation.css`:
+The base tokens live in `app/styles/foundation.css`; the public-facing expressive
+palette is applied in `app/styles/playful-foundation.css`:
 
-- cream and paper provide the quiet base;
-- ink and sage convey stability;
-- clay adds warmth;
-- ochre and marigold add small moments of creative energy; and
-- rose is reserved for low-opacity decorative artwork.
+- paper cream keeps copy readable and gives collage shapes room to breathe;
+- plum ink anchors headings and long-form content;
+- magenta and violet drive navigation, calls to action and expressive emphasis;
+- teal and mint represent grounding and connection; and
+- yellow, orange, sky and lime provide small high-energy accents.
 
-Do not introduce high-saturation pink or purple as a dominant surface. Those
-colors would change the practice's established character and reduce the sense
-of calm.
+Use saturated colors as purposeful blocks or accents, with plum or white text
+chosen for sufficient contrast. Avoid placing long paragraphs directly on the
+strongest colors.
+
+The wordmark is the header's visual anchor. Navigation sits beneath it at a
+smaller, lighter scale and uses one muted-plum accent as a calm wayfinding
+system. Keep the current page underlined, and reveal the paint-stroke underline
+on hover or focus for other destinations.
+
+The opening hero headline is intentionally one visual step quieter than the
+wordmark. Keep the brand lockup's scale and breathing room ahead of the headline
+so the practice name is the first thing visitors notice.
+
+Each major section has a distinct solid surface color so the page reads like a
+series of painted panels. Keep the surface tokens consistent when changing a
+section, and use small organic shapes or angled accents instead of gradients to
+connect neighboring panels.
+
+The footer is a compact two-tier close: a green rhythm ribbon followed by a
+short charcoal footer panel. The ribbon uses the body font with alternating regular
+and bold words for a light, wayfinding-style rhythm. Keep the copyright and
+legal links centered with the back-to-top action as an icon-only circular
+control at the panel's edge.
 
 ## Motion
 
 Motion lives in `app/styles/visual-language.css`, with viewport observation in
 `components/home/RevealOnScroll.tsx`.
 
-- Hero shapes drift slowly within a small range.
-- The rhythm lines travel through stroke dashes rather than moving page layout.
-- The ribbon is continuous and slow; it is an interlude, not a call to action.
+- Header branding remains a static English wordmark while hero artwork remains
+  static so the first screen still feels clear.
+- The ribbon is continuous and slow inside the footer, immediately above the
+  footer links, so the page closes with a celebratory transition without
+  repeating the site information already provided in the header.
 - Section reveals use opacity and a short vertical translation only.
-- Modality cards respond to hover and keyboard focus without hiding content.
+- Process icons move gently. Modality cards begin with a compact heading-only
+  footprint, then expand and flip on hover for mouse users or on click, Enter
+  or Space to reveal details.
 - All animations stop under `prefers-reduced-motion: reduce`.
 
 Avoid autoplay video, rapid parallax, scroll hijacking and large cursor-following
@@ -73,6 +100,12 @@ therapy space. Record the license or ownership source beside every new asset.
 - `app/styles/home-*.css` owns existing homepage sections.
 - `app/styles/visual-language.css` owns decorative visuals and motion.
 - `app/styles/responsive.css` owns shared responsive overrides.
+- `app/styles/playful-foundation.css` owns the expressive palette, two-row header
+  and static hero overrides.
+- `app/styles/playful-sections.css` owns colorful section surfaces and lower-page
+  motion.
+- `app/styles/modality-cards.css` owns the interactive modality card faces and
+  flip transition.
 - `components/home/` owns homepage-only markup and content constants.
 
 Keep each source file below the repository's 400-line soft ceiling. The visual
