@@ -84,16 +84,8 @@
   height: 5px;
   margin-bottom: 21px;
   border-radius: 999px;
-  background: var(--clay);
-  content: "";
-}
-
-.legal-content section:nth-child(2n)::before {
   background: var(--sage-deep);
-}
-
-.legal-content section:nth-child(3n)::before {
-  background: var(--ochre);
+  content: "";
 }
 
 .legal-content section + section {

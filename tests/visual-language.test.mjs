@@ -127,6 +127,11 @@ test("gives each major section a distinct solid color identity", async () => {
   assert.match(legalStyles, /\.legal-hero[\s\S]*background:\s*var\(--surface-hero\)/u);
   assert.doesNotMatch(legalStyles, /\.legal-hero \.eyebrow/u);
   assert.match(legalStyles, /\.legal-content section[\s\S]*padding:\s*0/u);
+  assert.match(
+    legalStyles,
+    /\.legal-content section::before[\s\S]*background:\s*var\(--sage-deep\)/u,
+  );
+  assert.doesNotMatch(legalStyles, /\.legal-content section:nth-child/u);
   assert.doesNotMatch(
     legalStyles,
     /\.legal-content section \{[^}]*?(?:border|box-shadow|background:\s*var\(--paper\))/u,

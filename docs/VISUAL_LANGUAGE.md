@@ -105,7 +105,7 @@ therapy space. Record the license or ownership source beside every new asset.
 - `app/styles/playful-sections.css` owns colorful section surfaces and lower-page
   motion.
 - `app/styles/legal.css` owns the painted legal-page hero, continuous reading
-  column and the no-gradient not-found state.
+  column, single teal section accent and the no-gradient not-found state.
 - `app/styles/modality-cards.css` owns the interactive modality card faces and
   flip transition.
 - `components/home/` owns homepage-only markup and content constants.
