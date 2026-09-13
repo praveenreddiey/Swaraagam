@@ -38,8 +38,14 @@ npm run check
 ```
 
 This runs lint, strict TypeScript validation, a production build, integration
-tests in an isolated Cloudflare-compatible runtime with D1, and a production
-dependency audit.
+tests in an isolated Cloudflare-compatible runtime with D1, Playwright browser
+checks at desktop and narrow mobile widths, and a production dependency audit.
+
+Install the Playwright Chromium runtime once after `npm ci`:
+
+```bash
+npx playwright install chromium
+```
 
 ## Appointment-request reliability
 
@@ -61,10 +67,12 @@ data retention, deployment checks and the remaining custom-domain work.
 ## Primary source areas
 
 - `app/`: routes, pages and API endpoint
+- `app/styles/`: focused visual-system, page-section and responsive stylesheets
+- `components/home/`: focused homepage sections, decorative visuals and reveal behavior
 - `components/`: shared navigation, footer and appointment-request form
 - `db/`: D1 schema and persistence helpers
 - `worker/`: Cloudflare entry point and security headers
-- `tests/`: production-build integration tests
+- `tests/`: production-build integration and browser interaction tests
 - `wrangler.example.jsonc`: safe template for your Worker and D1 binding
 
 ## Deployment
@@ -83,3 +91,18 @@ deploying, and the deployment workflow can still be started manually on demand.
 You can start with the free `*.workers.dev` hostname. When you own a domain,
 attach it to the Worker and keep `NEXT_PUBLIC_SITE_URL`, Turnstile hostnames,
 and `ALLOWED_ORIGINS` aligned with the live origin.
+
+## Visual language
+
+Swaraagam uses self-hosted Fraunces and Manrope fonts, an original paper-collage
+visual language, a green rhythm ribbon, and a compact charcoal footer panel. The
+header keeps the English Swaraagam wordmark clear; the hero remains static while
+lower-page motion adds energy on scroll and hover. Modality cards start compact
+and reveal their descriptions in an expanded face on hover, click or keyboard
+activation. Privacy, service-information and accessibility pages use the same
+painted surfaces, editorial headings and compact footer. All animation is
+disabled when a visitor requests reduced motion.
+
+The design intentionally does not reuse third-party website copy or imagery.
+See [docs/VISUAL_LANGUAGE.md](./docs/VISUAL_LANGUAGE.md) before changing colors,
+fonts, animation, or homepage artwork.

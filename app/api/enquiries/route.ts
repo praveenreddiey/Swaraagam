@@ -375,6 +375,7 @@ async function sendEnquiryEmailWithRetry(
   throw lastError;
 }
 
+/** Validate, store and notify the practice about one public enquiry request. */
 export async function POST(request: Request) {
   const requestId = crypto.randomUUID();
 
@@ -519,6 +520,7 @@ export async function POST(request: Request) {
   }
 }
 
+/** Reject unsupported reads with the endpoint's allowed method contract. */
 export async function GET() {
   return json({ error: "Method not allowed." }, 405, { Allow: "POST" });
 }

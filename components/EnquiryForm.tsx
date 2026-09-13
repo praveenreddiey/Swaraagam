@@ -26,6 +26,7 @@ declare global {
   }
 }
 
+/** Render and submit the visitor enquiry form with Turnstile verification. */
 export function EnquiryForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

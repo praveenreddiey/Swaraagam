@@ -1,19 +1,19 @@
 # Swaraagam developer guide
 
-> **Standalone handoff note:** Use [DEPLOY_YOURSELF.md](./DEPLOY_YOURSELF.md) as the source of truth for deployment and current bindings. This reference contains historical notes from before the active D1-backed enquiry flow; the current API requires the `DB` binding described in the deployment guide.
+> **Standalone handoff note:** Use [DEPLOY_YOURSELF.md](./DEPLOY_YOURSELF.md) as the source of truth for deployment and current bindings. The enquiry API requires the `DB` binding described there.
 
 This guide explains the application for a developer coming from Java/Spring with limited frontend experience. It focuses on the code that is active today, how a browser request moves through the system, and the safest places to make common changes.
 
 ## 1. What this application is
 
-Swaraagam is a single-page therapy-practice website with two interactive paths:
+Swaraagam is a therapy-practice website with two primary visitor paths:
 
-- Visitors can open an external Calendly page to book a consultation.
-- Visitors can submit an enquiry form. The browser obtains a Cloudflare Turnstile token, sends JSON to the application's API route, and the server sends the enquiry to the practice through Resend.
+- Visitors can explore the practice, modalities, process, and service information.
+- Visitors can request a session through the native enquiry form. The browser obtains a Cloudflare Turnstile token, sends JSON to the application's API route, and the server safely stores the enquiry before notifying the practice through Resend.
 
 The application is full-stack TypeScript. React renders the interface, a Next.js-compatible App Router supplies page and API conventions, vinext/Vite builds it, and a Cloudflare Worker runs the deployed server code.
 
-There is currently no application database in use. Enquiries are emailed and are not written to D1, a file, or browser storage.
+Cloudflare D1 is the durable source of truth for accepted enquiries, notification status, retention, and shared rate-limit counters. A provider failure cannot erase a valid request.
 
 ## 2. Java/Spring-to-this-project mental map
 
@@ -44,8 +44,8 @@ The analogy is useful, but one difference matters: React component state lives i
 - **Cloudflare Workers**: deployed server runtime.
 - **Cloudflare Turnstile**: bot check for the enquiry form.
 - **Resend**: outbound email provider.
-- **Calendly**: external appointment scheduling.
-- **Drizzle ORM + Cloudflare D1**: included as optional scaffolding; not used by the active application.
+- **Drizzle ORM + Cloudflare D1**: durable enquiry storage, idempotency, retention, and shared rate limiting.
+- **Playwright**: browser-level interaction and responsive-layout regression tests.
 
 Node.js `>=22.13.0` is required.
 
@@ -55,16 +55,21 @@ Node.js `>=22.13.0` is required.
 .
 ├── app/
 │   ├── api/enquiries/route.ts  # Server-side enquiry endpoint
-│   ├── globals.css             # Design system, layout, responsive rules, animation
+│   ├── styles/                 # Focused visual-system and responsive stylesheets
+│   ├── globals.css             # Ordered stylesheet import manifest
 │   ├── layout.tsx              # Root HTML shell and SEO/social metadata
-│   └── page.tsx                # Home page, interaction state, form submission
+│   └── page.tsx                # Server-rendered homepage composition
+├── components/
+│   ├── home/                   # Homepage sections, content, cards, and artwork
+│   └── *.tsx                   # Shared header, footer, legal shell, and enquiry form
 ├── db/
-│   ├── index.ts                # Creates a Drizzle client if D1 is enabled
-│   └── schema.ts               # Enquiry and shared rate-limit tables
+│   ├── enquiries.ts            # Persistence, notification, and rate-limit operations
+│   ├── index.ts                # Creates the Drizzle client from the D1 binding
+│   └── schema.ts               # Durable enquiry and rate-limit tables
 ├── drizzle/                    # Generated migration metadata
-├── examples/d1/                # Example only, not part of the live route flow
 ├── public/                     # Static files served by URL from the site root
-├── tests/rendered-html.test.mjs# Render and API behaviour tests
+├── tests/                      # Render/API and Playwright browser tests
+├── playwright.config.ts        # Isolated browser-test server and Chromium config
 ├── worker/index.ts             # Cloudflare Worker entry and image optimization
 ├── .env.example                # Environment variable template; contains no real secrets
 ├── drizzle.config.ts           # Drizzle migration generator configuration
@@ -82,32 +87,34 @@ Generated or local-only directories such as `node_modules/`, `.vinext/`, `dist/`
 ```mermaid
 flowchart LR
     Browser["Browser: React page"]
-    Calendly["Calendly"]
     API["POST /api/enquiries"]
     Turnstile["Cloudflare Turnstile Siteverify"]
+    D1["Cloudflare D1"]
     Resend["Resend email API"]
     Inbox["Practice inbox"]
 
-    Browser -->|"Open booking link"| Calendly
     Browser -->|"JSON + Turnstile token"| API
     API -->|"Verify token"| Turnstile
-    API -->|"Send validated enquiry"| Resend
+    API -->|"Store validated enquiry"| D1
+    API -->|"Send notification"| Resend
+    API -->|"Update notification status"| D1
     Resend --> Inbox
 ```
 
-The application has no persistent application-data path in this diagram. Cloudflare D1 becomes relevant only if a future feature explicitly imports `getDb()` and defines tables.
+The API writes to D1 before contacting Resend. Submission UUIDs make retries idempotent, and notification state records whether delivery was accepted or remains pending.
 
 ### Enquiry sequence
 
-1. `app/page.tsx` renders the form and loads the Turnstile browser script.
+1. `components/EnquiryForm.tsx` renders the form and loads the Turnstile browser script.
 2. Turnstile calls a React callback with a short-lived token.
 3. `handleSubmit()` prevents the browser's normal form post and calls `fetch("/api/enquiries")` with JSON.
-4. `app/api/enquiries/route.ts` checks origin, content type, body size, and a local attempt limit.
+4. `app/api/enquiries/route.ts` checks origin, content type, body size, and the D1-backed attempt limit.
 5. The route parses, normalizes, and validates every field. Browser validation is treated only as a convenience.
 6. The route sends the token to Turnstile Siteverify.
-7. If verification succeeds, the route sends an escaped HTML email and a plain-text email through Resend.
-8. The API returns `202 Accepted`; React resets the form and displays the success state.
-9. Failures return a safe message plus a request ID. Submitted personal data is not intentionally written to server logs.
+7. If verification succeeds, the route stores the request in D1 and reserves a notification attempt.
+8. The route sends an escaped HTML email and a plain-text email through Resend, then records the provider outcome.
+9. The API returns `202 Accepted` after safe storage; React resets the form and displays the success state. Provider failure leaves the stored request pending instead of losing it.
+10. Failures return a safe message plus a request ID. Submitted personal data is not intentionally written to server logs.
 
 ## 6. Understanding the frontend
 
@@ -131,32 +138,31 @@ Key differences from HTML/templates:
 
 ### 6.2 Components
 
-`Home()` in `app/page.tsx` is a React function component. It returns the page's element tree. When its state changes, React calls the component again and updates only the necessary DOM nodes.
+`Home()` in `app/page.tsx` is a small server-rendered composition. Focused sections live in `components/home/`, shared page furniture lives in `components/`, and repeated modality, process, and FAQ copy lives in `components/home/content.ts`.
 
-The page is currently one large component. The `modalities` and `steps` arrays near the top are data models used to generate repeated cards. As the site grows, coherent sections such as `BookingForm` or `ModalitiesSection` can be extracted into files under `app/components/` without changing the API.
+Interactive components are deliberately narrow. `PrimaryNavigation` owns route/hash state, `ModalityCard` owns one card's flip state and responsive height, `RevealOnScroll` owns viewport reveals, and `EnquiryForm` owns submission state and Turnstile integration.
 
 ### 6.3 Client and server code
 
-The first line of `app/page.tsx` is:
+Interactive files such as `components/EnquiryForm.tsx` begin with:
 
 ```tsx
 "use client";
 ```
 
-This is required because the page uses browser features, event handlers, and React hooks. A Client Component can be pre-rendered into initial HTML, but its interaction logic is downloaded and **hydrated** in the browser.
+This is required because those components use browser features, event handlers, or React hooks. A Client Component can be pre-rendered into initial HTML, but its interaction logic is downloaded and **hydrated** in the browser.
 
-`app/layout.tsx` has no `"use client"` marker and is server code. It reads request headers to generate the correct absolute URL for social metadata.
+`app/page.tsx` and `app/layout.tsx` have no `"use client"` marker and remain server components.
 
-`app/api/enquiries/route.ts` is server-only. Secret keys are allowed there and must never be moved into `app/page.tsx`.
+`app/api/enquiries/route.ts` is server-only. Secret keys are allowed there and must never be moved into a client component.
 
 ### 6.4 State: `useState`
 
-The page declares five state values:
+`EnquiryForm` declares four state values:
 
 | State | Purpose |
 | --- | --- |
 | `submitted` | shows the success message |
-| `calendarNote` | shows fallback scheduling information when no Calendly URL exists |
 | `isSubmitting` | disables repeat submission and changes button text |
 | `formError` | shows the latest visitor-safe error |
 | `turnstileToken` | holds the current bot-check token |
@@ -167,16 +173,17 @@ Calling a setter such as `setIsSubmitting(true)` schedules a render. It does not
 
 `useEffect(callback, [])` runs after the component mounts in the browser and cleans up when it unmounts. The empty dependency array means "set this up once for this mount."
 
-The page has two effects:
+Client components use effects for distinct browser integrations:
 
-- An `IntersectionObserver` adds `is-visible` when marked sections enter the viewport.
-- A Turnstile effect loads the external script, renders its widget, registers callbacks, and removes the widget during cleanup.
+- `RevealOnScroll` uses an `IntersectionObserver` to add `is-visible` when marked sections enter the viewport.
+- `EnquiryForm` loads the external Turnstile script, renders its widget, registers callbacks, and removes the widget during cleanup.
+- `ModalityCard` measures the rendered detail face so expanded cards remain content-safe at narrow widths.
 
 Effects should not be used for values that can be calculated directly during rendering. They are intended for synchronization with systems outside React, such as browser APIs and third-party widgets.
 
 ### 6.6 DOM references: `useRef`
 
-`turnstileContainerRef` gives Turnstile an actual DOM element to render into. `turnstileWidgetIdRef` remembers the provider's widget ID without causing a render when it changes.
+`turnstileContainerRef` gives Turnstile an actual DOM element to render into. `turnstileWidgetIdRef` remembers the provider's widget ID without causing a render when it changes. `ModalityCard` uses refs to measure its detail face and synchronously track pointer presence while click and hover events overlap.
 
 In general, let React own the DOM. Direct DOM operations are justified here because Turnstile and `IntersectionObserver` are external browser APIs.
 
@@ -193,7 +200,7 @@ The hidden `website` field is a honeypot. Humans do not see it, but simple bots 
 
 ## 7. Styling and responsive design
 
-All global styling is in `app/globals.css`.
+`app/globals.css` is an ordered import manifest. Shared tokens and primitives live in `app/styles/foundation.css`; each homepage section has one `home-*.css` owner; legal pages, modality-card interaction, shared visual motion, footer, and responsive overrides have focused files beside them. `responsive.css` must remain the final import.
 
 ### Design tokens
 
@@ -218,7 +225,7 @@ Tailwind is enabled by `@import "tailwindcss";`. There is no separate Tailwind c
 
 ### Responsive rules
 
-Media queries at the end of `globals.css` adjust grids, spacing, navigation, and form layout for smaller screens. Read rules from broad/default styles first, then check matching `@media (max-width: ...)` overrides before changing a layout.
+`app/styles/responsive.css` adjusts grids, spacing, navigation, and form layout for smaller screens. Read the owning base stylesheet first, then the matching responsive override before changing a layout.
 
 The `prefers-reduced-motion` rule is an accessibility feature. It removes reveal animation for visitors who request reduced motion.
 
@@ -322,8 +329,8 @@ Copy-Item .env.example .env.local
 
 | Variable | Used by | Secret? | Purpose |
 | --- | --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | metadata and browser | no | canonical public origin |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | browser | no | renders the Turnstile widget |
-| `NEXT_PUBLIC_CALENDLY_URL` | browser | no | external scheduling URL |
 | `TURNSTILE_SECRET_KEY` | API | yes | verifies Turnstile tokens |
 | `TURNSTILE_EXPECTED_HOSTNAMES` | API | no, server-only | accepted token hostnames |
 | `RESEND_API_KEY` | API | yes | authenticates to Resend |
@@ -334,7 +341,7 @@ Copy-Item .env.example .env.local
 
 Anything prefixed with `NEXT_PUBLIC_` can be embedded in browser JavaScript and must be considered public. Changing a public value requires a rebuild. Never add the prefix to a secret.
 
-`app/page.tsx` currently has fallback values for the public Turnstile site key and Calendly URL. Environment values take precedence. Server secrets have no production fallback; if they are missing, the enquiry route returns a generic `503`.
+`components/EnquiryForm.tsx` uses Cloudflare's documented public test key as its local fallback. Environment values take precedence. Server secrets have no production fallback; if they are missing, the enquiry route returns a generic `503`.
 
 Do not commit `.env.local`. The repository's `.gitignore` excludes `.env*` except `.env.example`.
 
@@ -359,23 +366,29 @@ Useful commands:
 | `npm run dev` | local development server and hot reload |
 | `npm run lint` | ESLint static checks |
 | `npm run build` | production vinext/Cloudflare build |
-| `npm test` | production build followed by Node render/API tests |
+| `npm run test:integration` | production build followed by Node render/API tests |
+| `npm run test:browser` | Playwright interaction and responsive-layout tests |
+| `npm test` | integration and browser test suites |
 | `npm run db:generate` | generate migrations after an intentional schema change |
 
 The Turnstile values in `.env.example` are Cloudflare test values suitable for local development only. Resend remains intentionally unconfigured until a real key, sender, and recipient are supplied, so a complete email delivery test needs provider configuration.
 
 ## 11. Tests
 
-`tests/rendered-html.test.mjs` imports the built Worker and makes in-memory HTTP requests to it. The suite verifies:
+`tests/rendered-html.test.mjs` imports the built Worker and makes in-memory HTTP requests to it. The integration suites verify:
 
-- the expected home page and configured Calendly link render;
+- the expected homepage, legal pages, metadata, and security headers render;
 - the endpoint rejects unsupported methods, origins, content types, and large bodies;
 - field, service, note-length, and consent validation;
 - honeypot behaviour;
 - safe failure when external providers are not configured;
-- the local attempt limit without exposing the source IP.
+- D1-backed rate limiting without storing the raw source IP;
+- durable, idempotent storage when Resend is unavailable; and
+- visual-language ownership, font licenses, section surfaces, and motion fallbacks.
 
-This is closer to a Spring `MockMvc` integration test than a browser end-to-end test. It does not run a real browser, solve a Turnstile challenge, or send a real email.
+The Worker integration suite does not launch a real browser, solve a Turnstile
+challenge or send a real email. `tests/browser/` complements it with Playwright
+coverage for navigation state, modality-card interactions and responsive layout.
 
 Before handing off a code change, run:
 
@@ -388,17 +401,20 @@ npm test
 
 ### Change visible wording
 
-Edit `app/page.tsx`. Most page copy is directly inside JSX. Repeated modality and process content is in the `modalities` and `steps` arrays near the top.
+Edit the focused component under `components/home/`. Repeated modality, process
+and FAQ content lives in `components/home/content.ts`.
 
 ### Change colours or fonts
 
-Start with the variables in the `:root` block of `app/globals.css`. Check desktop and mobile widths after the change.
+Start with the variables in the `:root` block of `app/styles/foundation.css`.
+Keep section-specific rules in their owning stylesheet and check desktop and
+mobile widths after the change.
 
 ### Add or rename a modality
 
 Update both locations:
 
-1. The `modalities` array and `<select>` options in `app/page.tsx`.
+1. `MODALITIES` in `components/home/content.ts` and the `<select>` options in `components/EnquiryForm.tsx`.
 2. The `SERVICES` set in `app/api/enquiries/route.ts`.
 
 If only the UI is changed, the server will correctly reject the new value. This duplication behaves like keeping a frontend enum and backend validation enum in sync.
@@ -407,25 +423,22 @@ If only the UI is changed, the server will correctly reject the new value. This 
 
 Update the full path, not just the form:
 
-1. Add the labelled control in `app/page.tsx`.
+1. Add the labelled control in `components/EnquiryForm.tsx`.
 2. Add it to the JSON object in `handleSubmit()`.
 3. Extend the `Enquiry` type in the API route.
 4. Normalize and validate it in `parseEnquiry()`.
-5. Add escaped HTML and plain-text representations to `sendEnquiryEmail()`.
-6. Add tests for valid, missing, boundary, and malicious values.
-7. Revisit the privacy wording and confirm the field is genuinely necessary.
-
-### Change the Calendly event
-
-Set `NEXT_PUBLIC_CALENDLY_URL` in the environment and rebuild. Avoid hard-coding another environment's URL into JSX.
+5. Add the field to `StoredEnquiry`, `db/schema.ts`, and a reviewed migration.
+6. Add escaped HTML and plain-text representations to the email notification.
+7. Add tests for valid, missing, boundary, retry, and malicious values.
+8. Revisit the privacy wording and confirm the field is genuinely necessary.
 
 ### Add a new page
 
 Create a folder below `app/` containing `page.tsx`. For example, `app/privacy/page.tsx` maps to `/privacy`. Keep it a server component unless it truly needs browser state, hooks, or event handlers.
 
-### Add database persistence
+### Change database persistence
 
-Do this only when the product and privacy requirements explicitly call for it:
+The enquiry flow already uses D1. Change it only when product and privacy requirements explicitly call for the additional data:
 
 1. Declare tables in `db/schema.ts`.
 2. Keep the D1 binding name as `DB` in `wrangler.jsonc`.
@@ -433,7 +446,7 @@ Do this only when the product and privacy requirements explicitly call for it:
 4. Import `getDb()` only from server code.
 5. Add retention, deletion, authorization, migration, backup, and privacy handling.
 
-Do not casually persist enquiry notes. The current design intentionally avoids an application copy of potentially sensitive information.
+Do not add new sensitive fields casually. Keep collection minimal, apply the existing retention window, and update the privacy notice with every schema change.
 
 ## 13. Common mistakes for Java developers new to React
 
@@ -479,7 +492,7 @@ Typical meanings:
 
 ### Styling differs by screen size
 
-Inspect the element's computed styles and find the winning rule. Then search `app/globals.css` for the class and review later media-query overrides.
+Inspect the element's computed styles and find the winning rule. Then search `app/styles/` for the class and review `responsive.css`, which intentionally loads last.
 
 ## 15. Deployment model
 
@@ -496,17 +509,14 @@ Deploy it from your own Cloudflare account with `npm run deploy:selfhost`.
 
 Deployment configuration and secrets belong in the hosting environment. For go-live requirements, security hardening, privacy operations, provider setup, and the launch checklist, read `PRODUCTION_READINESS.md`.
 
-## 16. Inactive example code
-
-The `examples/d1/` directory demonstrates D1 usage but does not automatically create routes in the active application. Treat it as reference material.
-
-## 17. Recommended reading order for your first change
+## 16. Recommended reading order for your first change
 
 1. `package.json` — learn the available commands and dependencies.
-2. `app/page.tsx` — follow the data, state, effects, markup, and form submission.
-3. `app/globals.css` — connect JSX class names to their styles and responsive overrides.
+2. `app/page.tsx` and `components/home/` — follow the homepage composition and focused sections.
+3. `app/globals.css`, then `app/styles/foundation.css` and the relevant owner file — connect class names to base and responsive rules.
 4. `app/api/enquiries/route.ts` — follow the server validation and provider calls.
-5. `tests/rendered-html.test.mjs` — see the externally observable behaviour.
-6. `vite.config.ts` and `worker/index.ts` — understand build/runtime integration last.
+5. `db/enquiries.ts` and `db/schema.ts` — understand durable storage and retry state.
+6. `tests/rendered-html.test.mjs` and `tests/browser/homepage.spec.ts` — see the externally observable behavior.
+7. `vite.config.ts` and `worker/index.ts` — understand build/runtime integration last.
 
 For a safe first exercise, change one piece of page copy, run `npm run lint` and `npm test`, then inspect the result with `npm run dev` at desktop and mobile widths.

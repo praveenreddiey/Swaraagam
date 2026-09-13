@@ -4,15 +4,14 @@ import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
 type LegalPageProps = {
-  eyebrow: string;
   title: string;
   summary: string;
   updated: string;
   children: ReactNode;
 };
 
+/** Render a long-form information page inside the shared public-site frame. */
 export function LegalPage({
-  eyebrow,
   title,
   summary,
   updated,
@@ -35,7 +34,6 @@ export function LegalPage({
               <span aria-hidden="true">←</span>
               Back to Swaraagam
             </Link>
-            <p className="eyebrow">{eyebrow}</p>
             <h1>{title}</h1>
             <p className="legal-summary">{summary}</p>
             <p className="legal-updated">Last updated: {updated}</p>

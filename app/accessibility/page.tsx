@@ -3,6 +3,7 @@ import { CopyEmailAddress } from "@/components/CopyEmailAddress";
 import { LegalPage } from "@/components/LegalPage";
 import { CONTACT_EMAIL } from "@/lib/site";
 
+/** Define canonical search metadata for the accessibility statement. */
 export const metadata: Metadata = {
   title: "Accessibility Statement",
   description:
@@ -10,10 +11,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/accessibility" },
 };
 
+/** Render the public accessibility statement and feedback contact. */
 export default function AccessibilityPage() {
   return (
     <LegalPage
-      eyebrow="Access for everyone"
       title="Accessibility Statement"
       summary="Swaraagam aims to make this website calm, understandable and usable by as many people as possible."
       updated="23 August 2026"

@@ -1,48 +1,47 @@
 import Image from "next/image";
 import Link from "next/link";
-import { RotatingBrandName } from "./RotatingBrandName";
+import { PrimaryNavigation } from "./PrimaryNavigation";
 
+/** Render the shared brand header and route-aware primary navigation. */
 export function SiteHeader() {
   return (
     <header className="site-header" aria-label="Primary navigation">
-      <div className="page-shell flex h-[76px] items-center justify-between gap-5">
-        <Link href="/" className="brand" aria-label="Swaraagam home">
+      <div className="site-header-brand-row">
+        <Link
+          href="/"
+          className="brand brand-centered"
+          aria-label="Swaraagam home"
+        >
           <Image
             className="brand-mark"
             src="/swaraagam-guitar-waves-mark.png"
             alt=""
-            width={50}
-            height={50}
+            width={72}
+            height={72}
             priority
             unoptimized
             aria-hidden="true"
           />
-          <span>
-            <RotatingBrandName />
+          <span className="brand-lockup">
+            <strong>swaraagam</strong>
             <small>Creative Therapeutic Practice</small>
           </span>
         </Link>
+      </div>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main menu">
-          <Link className="nav-link" href="/#about">
-            About
-          </Link>
-          <Link className="nav-link" href="/#modalities">
-            Modalities
-          </Link>
-          <Link className="nav-link" href="/service-information">
-            Service information
-          </Link>
-        </nav>
+      <div className="site-header-navigation-row">
+        <div className="page-shell site-header-navigation-shell">
+          <PrimaryNavigation />
 
-        <Link
-          className="button button-small directional-link"
-          data-direction="right"
-          href="/#booking"
-        >
-          Book a session
-          <span aria-hidden="true">↗</span>
-        </Link>
+          <Link
+            className="header-booking-link directional-link"
+            data-direction="right"
+            href="/#booking"
+          >
+            Book a session
+            <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
       </div>
     </header>
   );

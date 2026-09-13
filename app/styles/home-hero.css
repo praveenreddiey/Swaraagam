@@ -1,0 +1,194 @@
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  padding: 52px 0 0;
+  background: var(--surface-hero);
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 92px);
+  min-height: 570px;
+  padding-bottom: 64px;
+}
+
+.hero-copy {
+  max-width: 680px;
+  padding-bottom: 0;
+}
+
+
+.hero-title {
+  max-width: 730px;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(50px, 5.2vw, 78px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1.01;
+}
+
+.hero-title span {
+  color: var(--clay);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hero-lede {
+  max-width: 600px;
+  margin: 28px 0 0;
+  color: #544d61;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.hero-meaning-line {
+  max-width: 600px;
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.hero-side {
+  position: relative;
+  width: min(100%, 430px);
+  justify-self: end;
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: var(--card-backplate-offset) var(--card-backplate-offset) 0 var(--card-backplate-color);
+  padding: 31px;
+}
+
+.hero-side::before {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: -10px;
+  top: 34px;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--clay);
+  content: "";
+}
+
+.hero-side-label,
+.section-kicker {
+  margin: 0;
+  color: var(--clay);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero-side-copy {
+  max-width: 390px;
+  margin: 14px 0 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.hero-action-link {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0 24px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hero-action-link:hover,
+.hero-action-link:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fffdf9;
+  box-shadow: 0 10px 26px rgba(36, 51, 45, 0.14);
+  transform: translateY(-2px);
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.hero-primary-cta {
+  min-width: 220px;
+}
+
+
+.hero-orb {
+  position: absolute;
+  border: 1px solid rgba(77, 103, 88, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-orb-one { width: 420px; height: 420px; left: -280px; top: 240px; }
+.hero-orb-two { width: 200px; height: 200px; right: -120px; top: 95px; }
+
+.hero-kicker {
+  display: inline-flex;
+  margin-bottom: 21px;
+  border-radius: 999px;
+  background: var(--card-backplate-color);
+  color: var(--ink);
+  padding: 7px 12px 6px;
+}
+
+.hero-side-label { color: var(--violet); }
+
+.hero-primary-cta,
+.mobile-booking-bar .button {
+  border-color: var(--violet);
+  background: var(--violet);
+}
+
+.hero-primary-cta:hover,
+.mobile-booking-bar .button:hover {
+  background: var(--clay);
+}
+
+.hero-artwork {
+  inset: 0;
+  opacity: 0.78;
+}
+
+.rhythm-wash,
+.rhythm-line,
+.rhythm-bloom,
+.rhythm-note,
+.rhythm-dot {
+  animation: none;
+}
+
+.rhythm-wash-sage { fill: #a9ead8; opacity: 0.48; }
+.rhythm-wash-clay { fill: #ffc7df; opacity: 0.48; }
+.rhythm-line-primary { stroke: var(--violet); opacity: 0.18; }
+.rhythm-line-secondary { stroke: var(--clay); opacity: 0.2; }
+.rhythm-bloom-one { stroke: var(--clay); opacity: 0.34; }
+.rhythm-bloom-two { stroke: var(--ochre); opacity: 0.34; }
+.rhythm-note-one { fill: var(--violet); opacity: 0.09; }
+.rhythm-note-two { fill: var(--clay); opacity: 0.09; }
+

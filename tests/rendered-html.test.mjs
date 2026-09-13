@@ -193,41 +193,27 @@ test("renders the site, legal pages and production security headers", async () =
     /src="\/swaraagam-guitar-waves-mark\.png"/,
     "the static brand mark must bypass the unsupported production image optimizer",
   );
-  assert.match(html, /स्वरागम/);
-  assert.match(html, /સ્વરાગમ/);
-  assert.match(html, /స్వరాగం/);
-  assert.match(html, /ஸ்வராகம்/);
+  assert.match(html, /<strong>swaraagam<\/strong>/i);
   assert.doesNotMatch(html, /\/_vinext\/image\?/);
   assert.match(
     html,
     /<title>Swaraagam \| Counselling, Arts-Based &amp; Music-Informed Support<\/title>/i,
   );
-  assert.match(html, /application\/ld\+json/i);
-  assert.match(html, /"@type":"Organization"/i);
-  assert.match(html, /How booking works/);
-  assert.match(html, /Receive a personal reply/);
-  assert.match(html, /Music Therapy Intern/);
-  assert.match(html, /Your request is saved securely/);
-  assert.match(html, /Request a session/);
-  assert.match(html, /Add a brief note/);
-  assert.match(html, /Preferred date/);
-  assert.match(html, /Preferred time \(IST\)/);
+  for (const expectedHomeContent of [
+    /application\/ld\+json/i, /"@type":"Organization"/i, /How booking works/, /Receive a personal reply/,
+    /Music Therapy Intern/, /Your request is saved securely/, /Request a session/, /Add a brief note/,
+    /Preferred date/, /Preferred time \(IST\)/, /A little clarity before you begin/, /What happens in the first session\?/,
+    /mobile-booking-bar/, /Not a crisis service/, /Portrait space for Pragati Bhatt/, /property="og:image"/i,
+    /href="\/privacy"/, /href="\/accessibility"/, /href="\/service-information"/, /Copy enquiries@swaraagam\.com to clipboard/,
+  ]) {
+    assert.match(html, expectedHomeContent);
+  }
   assert.doesNotMatch(
     html,
     /Who is the session for|Preferred session time|What are you looking for|Preferred session format|Add another preferred time/,
   );
   assert.doesNotMatch(html, /No redirect|Stay on this page|Native appointment request/);
-  assert.match(html, /A little clarity before you begin/);
-  assert.match(html, /What happens in the first session\?/);
-  assert.match(html, /mobile-booking-bar/);
-  assert.match(html, /Not a crisis service/);
-  assert.match(html, /Portrait space for Pragati Bhatt/);
-  assert.match(html, /property="og:image"/i);
   assert.doesNotMatch(html, /Calendly|calendly\.com/i);
-  assert.match(html, /href="\/privacy"/);
-  assert.match(html, /href="\/accessibility"/);
-  assert.match(html, /href="\/service-information"/);
-  assert.match(html, /Copy enquiries@swaraagam\.com to clipboard/);
   assert.doesNotMatch(html, /mailto:/i);
   assert.doesNotMatch(html, /not stored in this website/i);
 
