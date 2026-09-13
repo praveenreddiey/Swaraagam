@@ -61,6 +61,8 @@ data retention, deployment checks and the remaining custom-domain work.
 ## Primary source areas
 
 - `app/`: routes, pages and API endpoint
+- `app/styles/`: focused visual-system, page-section and responsive stylesheets
+- `components/home/`: focused homepage sections, decorative visuals and reveal behavior
 - `components/`: shared navigation, footer and appointment-request form
 - `db/`: D1 schema and persistence helpers
 - `worker/`: Cloudflare entry point and security headers
@@ -83,3 +85,14 @@ deploying, and the deployment workflow can still be started manually on demand.
 You can start with the free `*.workers.dev` hostname. When you own a domain,
 attach it to the Worker and keep `NEXT_PUBLIC_SITE_URL`, Turnstile hostnames,
 and `ALLOWED_ORIGINS` aligned with the live origin.
+
+## Visual language
+
+Swaraagam uses self-hosted Fraunces and Manrope fonts, an original abstract
+rhythm illustration, a restrained moving text ribbon, and progressive section
+reveals. Motion is decorative: content remains available without JavaScript and
+animation is disabled when a visitor requests reduced motion.
+
+The design intentionally does not reuse third-party website copy or imagery.
+See [docs/VISUAL_LANGUAGE.md](./docs/VISUAL_LANGUAGE.md) before changing colors,
+fonts, animation, or homepage artwork.

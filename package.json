@@ -10,7 +10,7 @@
     "build": "vinext build",
     "deploy:selfhost": "npm run build && wrangler deploy --config wrangler.jsonc",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/deployment-config.test.mjs tests/rendered-html.test.mjs",
+    "test": "npm run build && node --test tests/deployment-config.test.mjs tests/rendered-html.test.mjs tests/visual-language.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit --pretty false",
     "check": "npm run lint && npm run typecheck && npm test && npm audit --omit=dev",
