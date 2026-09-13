@@ -8,7 +8,6 @@ export default function NotFound() {
       <SiteHeader />
       <main className="not-found-main">
         <div className="page-shell">
-          <p className="eyebrow">Page not found</p>
           <h1>This page has moved out of rhythm.</h1>
           <p>
             The address may be incorrect or the page may no longer be

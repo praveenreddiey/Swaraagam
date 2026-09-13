@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default function AccessibilityPage() {
   return (
     <LegalPage
-      eyebrow="Access for everyone"
       title="Accessibility Statement"
       summary="Swaraagam aims to make this website calm, understandable and usable by as many people as possible."
       updated="23 August 2026"

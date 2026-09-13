@@ -125,7 +125,7 @@ test("gives each major section a distinct solid color identity", async () => {
   assert.doesNotMatch(playfulSections, /\.rhythm-ribbon[\s\S]*linear-gradient/u);
   assert.match(legalStyles, /\.legal-main[\s\S]*background:\s*var\(--surface-modalities\)/u);
   assert.match(legalStyles, /\.legal-hero[\s\S]*background:\s*var\(--surface-hero\)/u);
-  assert.match(legalStyles, /\.legal-hero \.eyebrow[\s\S]*width:\s*fit-content/u);
+  assert.doesNotMatch(legalStyles, /\.legal-hero \.eyebrow/u);
   assert.match(legalStyles, /\.legal-content section[\s\S]*padding:\s*0/u);
   assert.doesNotMatch(
     legalStyles,

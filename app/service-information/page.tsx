@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default function ServiceInformationPage() {
   return (
     <LegalPage
-      eyebrow="Before we begin"
       title="Service Information"
       summary="Clear practical information to help you decide whether Swaraagam may be a suitable place to begin."
       updated="23 August 2026"

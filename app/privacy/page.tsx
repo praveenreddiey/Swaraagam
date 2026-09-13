@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <LegalPage
-      eyebrow="Your information"
       title="Privacy Notice"
       summary="This notice explains what this website collects, why it is needed, how it is protected and the choices available to you."
       updated="23 August 2026"
