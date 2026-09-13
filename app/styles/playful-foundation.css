@@ -23,6 +23,8 @@
   --surface-modalities: #eee7ff;
   --surface-faq: #d9f5e8;
   --surface-booking: #ffdbe9;
+  --card-backplate-color: #ffd34e;
+  --card-backplate-offset: 12px;
   --surface-ribbon: #08ad68;
   --surface-footer: var(--ink);
   --nav-accent: #5b536b;
@@ -213,7 +215,7 @@ html::-webkit-scrollbar {
   border: 2px solid var(--ink);
   border-radius: 28px;
   background: rgba(255, 253, 248, 0.92);
-  box-shadow: 12px 12px 0 #ffd34e;
+  box-shadow: var(--card-backplate-offset) var(--card-backplate-offset) 0 var(--card-backplate-color);
   padding: 31px;
 }
 
@@ -278,6 +280,8 @@ html::-webkit-scrollbar {
 }
 
 @media (max-width: 780px) {
+  :root { --card-backplate-offset: 9px; }
+
   .site-header-brand-row {
     min-height: 88px;
     justify-content: start;
@@ -306,7 +310,6 @@ html::-webkit-scrollbar {
 
   .hero-side {
     max-width: calc(100% - 12px);
-    box-shadow: 9px 9px 0 #ffd34e;
     padding: 25px;
   }
 

@@ -57,6 +57,9 @@ series of painted panels. Keep the surface tokens consistent when changing a
 section, and use small organic shapes or angled accents instead of gradients to
 connect neighboring panels.
 
+The hero card and booking form share the same yellow backplate and offset so
+the two primary calls to action feel like part of one visual system.
+
 The footer is a compact two-tier close: a green rhythm ribbon followed by a
 short charcoal footer panel. The ribbon uses the body font with alternating regular
 and bold words for a light, wayfinding-style rhythm. Keep the copyright and

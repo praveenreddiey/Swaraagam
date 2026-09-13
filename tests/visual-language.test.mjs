@@ -110,6 +110,8 @@ test("gives each major section a distinct solid color identity", async () => {
   assert.match(playfulFoundation, /--surface-hero:/u);
   assert.match(playfulFoundation, /--surface-ribbon:/u);
   assert.match(playfulFoundation, /--surface-footer:/u);
+  assert.match(playfulFoundation, /--card-backplate-color:\s*#ffd34e/u);
+  assert.match(playfulFoundation, /--card-backplate-offset:\s*12px/u);
   assert.match(playfulFoundation, /--nav-accent:/u);
   assert.match(playfulFoundation, /\.hero-section[\s\S]*var\(--surface-hero\)/u);
   assert.match(playfulSections, /\.therapist-section[\s\S]*background:\s*var\(--surface-about\)/u);
@@ -118,7 +120,14 @@ test("gives each major section a distinct solid color identity", async () => {
   assert.match(playfulSections, /\.modalities-section \.section-heading-row[\s\S]*justify-content:\s*center/u);
   assert.match(playfulSections, /\.faq-section[\s\S]*background:\s*var\(--surface-faq\)/u);
   assert.match(playfulSections, /\.booking-section[\s\S]*background:\s*var\(--surface-booking\)/u);
-  assert.match(playfulSections, /\.contact-form[\s\S]*box-shadow:\s*14px 14px 0 var\(--marigold\)/u);
+  assert.match(
+    playfulSections,
+    /\.contact-form[\s\S]*box-shadow:\s*var\(--card-backplate-offset\)\s+var\(--card-backplate-offset\)\s+0\s+var\(--card-backplate-color\)/u,
+  );
+  assert.match(
+    playfulFoundation,
+    /\.hero-side[\s\S]*box-shadow:\s*var\(--card-backplate-offset\)\s+var\(--card-backplate-offset\)\s+0\s+var\(--card-backplate-color\)/u,
+  );
   assert.match(playfulSections, /\.rhythm-ribbon[\s\S]*background:\s*var\(--surface-ribbon\)/u);
   assert.match(playfulSections, /\.site-footer[\s\S]*background:\s*var\(--surface-footer\)/u);
   assert.doesNotMatch(playfulFoundation, /\.hero-section[\s\S]*linear-gradient/u);
