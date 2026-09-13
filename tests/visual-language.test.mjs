@@ -105,6 +105,7 @@ test("gives each major section a distinct solid color identity", async () => {
     "styles",
     "playful-sections.css",
   );
+  const legalStyles = await readProjectFile("app", "styles", "legal.css");
 
   assert.match(playfulFoundation, /--surface-hero:/u);
   assert.match(playfulFoundation, /--surface-ribbon:/u);
@@ -122,6 +123,11 @@ test("gives each major section a distinct solid color identity", async () => {
   assert.match(playfulSections, /\.site-footer[\s\S]*background:\s*var\(--surface-footer\)/u);
   assert.doesNotMatch(playfulFoundation, /\.hero-section[\s\S]*linear-gradient/u);
   assert.doesNotMatch(playfulSections, /\.rhythm-ribbon[\s\S]*linear-gradient/u);
+  assert.match(legalStyles, /\.legal-main[\s\S]*background:\s*var\(--surface-modalities\)/u);
+  assert.match(legalStyles, /\.legal-hero[\s\S]*background:\s*var\(--surface-hero\)/u);
+  assert.match(legalStyles, /\.legal-hero \.eyebrow[\s\S]*width:\s*fit-content/u);
+  assert.match(legalStyles, /\.legal-content section[\s\S]*border:\s*2px solid var\(--ink\)/u);
+  assert.doesNotMatch(legalStyles, /radial-gradient|linear-gradient/u);
 });
 
 test("keeps navigation centered and footer controls free of separator rules", async () => {
@@ -135,6 +141,7 @@ test("keeps navigation centered and footer controls free of separator rules", as
     "styles",
     "playful-sections.css",
   );
+  const legalStyles = await readProjectFile("app", "styles", "legal.css");
   const modalityCards = await readProjectFile(
     "app",
     "styles",
@@ -177,6 +184,7 @@ test("keeps navigation centered and footer controls free of separator rules", as
   assert.match(playfulSections, /\.site-footer \.back-to-top[\s\S]*position:\s*absolute/u);
   assert.match(playfulSections, /\.site-footer \.footer-bottom > span[\s\S]*font-size:\s*12px/u);
   assert.doesNotMatch(playfulSections, /crisis-note/u);
+  assert.doesNotMatch(legalStyles, /section \+ section[\s\S]*border-top/u);
 });
 
 test("composes the homepage from its new visual-language elements", async () => {

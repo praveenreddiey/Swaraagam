@@ -50,8 +50,8 @@
   }
   .mobile-booking-bar .button { width: 100%; min-height: 48px; }
   .mobile-booking-bar ~ .site-footer { padding-bottom: 72px; }
-  .legal-hero { padding: 62px 0 44px; }
-  .legal-content { padding: 48px 0 64px; }
+  .legal-hero { padding: 42px 0 48px; }
+  .legal-content { padding: 38px 0 62px; }
 }
 
 @media (max-width: 560px) {
@@ -88,11 +88,10 @@
   .site-footer > .page-shell { padding-top: 12px; }
   .footer-bottom { min-height: 58px; }
   .footer-bottom > div { display: none; }
-  .legal-main { padding-top: 76px; }
-  .legal-hero { padding: 48px 0 38px; }
+  .legal-hero { padding: 36px 0 42px; }
   .legal-hero h1 { font-size: clamp(45px, 14vw, 62px); }
   .legal-summary { font-size: 16px; }
-  .legal-content section + section { margin-top: 36px; padding-top: 36px; }
+  .legal-content section + section { margin-top: 20px; padding-top: 24px; }
 }
 
 @media (max-width: 780px) {
