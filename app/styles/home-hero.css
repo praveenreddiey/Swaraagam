@@ -1,10 +1,8 @@
 .hero-section {
   position: relative;
   overflow: hidden;
-  padding: 104px 0 0;
-  background:
-    radial-gradient(circle at 80% 25%, rgba(216, 226, 211, 0.7), transparent 31%),
-    linear-gradient(180deg, #f8f4ec 0%, #f5f0e6 100%);
+  padding: 52px 0 0;
+  background: var(--surface-hero);
 }
 
 .hero-grid {
@@ -14,8 +12,8 @@
   grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
   align-items: center;
   gap: clamp(48px, 7vw, 92px);
-  min-height: 500px;
-  padding-bottom: 52px;
+  min-height: 570px;
+  padding-bottom: 64px;
 }
 
 .hero-copy {
@@ -29,14 +27,14 @@
   margin: 0;
   color: var(--ink);
   font-family: var(--font-display);
-  font-size: clamp(58px, 6vw, 90px);
+  font-size: clamp(50px, 5.2vw, 78px);
   font-weight: 400;
   letter-spacing: -0.055em;
-  line-height: 0.98;
+  line-height: 1.01;
 }
 
 .hero-title span {
-  color: var(--sage-deep);
+  color: var(--clay);
   font-style: italic;
   font-weight: 400;
 }
@@ -44,7 +42,7 @@
 .hero-lede {
   max-width: 600px;
   margin: 28px 0 0;
-  color: var(--ink-soft);
+  color: #544d61;
   font-size: 18px;
   line-height: 1.75;
 }
@@ -60,18 +58,22 @@
 
 .hero-side {
   position: relative;
-  width: min(100%, 445px);
+  width: min(100%, 430px);
   justify-self: end;
-  border-left: 1px solid rgba(77, 103, 88, 0.28);
-  padding: 30px 0 30px 38px;
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: var(--card-backplate-offset) var(--card-backplate-offset) 0 var(--card-backplate-color);
+  padding: 31px;
 }
 
 .hero-side::before {
   position: absolute;
-  width: 9px;
-  height: 9px;
-  left: -5px;
-  top: 50px;
+  width: 18px;
+  height: 18px;
+  left: -10px;
+  top: 34px;
+  border: 3px solid var(--paper);
   border-radius: 50%;
   background: var(--clay);
   content: "";
@@ -145,4 +147,48 @@
 
 .hero-orb-one { width: 420px; height: 420px; left: -280px; top: 240px; }
 .hero-orb-two { width: 200px; height: 200px; right: -120px; top: 95px; }
+
+.hero-kicker {
+  display: inline-flex;
+  margin-bottom: 21px;
+  border-radius: 999px;
+  background: var(--card-backplate-color);
+  color: var(--ink);
+  padding: 7px 12px 6px;
+}
+
+.hero-side-label { color: var(--violet); }
+
+.hero-primary-cta,
+.mobile-booking-bar .button {
+  border-color: var(--violet);
+  background: var(--violet);
+}
+
+.hero-primary-cta:hover,
+.mobile-booking-bar .button:hover {
+  background: var(--clay);
+}
+
+.hero-artwork {
+  inset: 0;
+  opacity: 0.78;
+}
+
+.rhythm-wash,
+.rhythm-line,
+.rhythm-bloom,
+.rhythm-note,
+.rhythm-dot {
+  animation: none;
+}
+
+.rhythm-wash-sage { fill: #a9ead8; opacity: 0.48; }
+.rhythm-wash-clay { fill: #ffc7df; opacity: 0.48; }
+.rhythm-line-primary { stroke: var(--violet); opacity: 0.18; }
+.rhythm-line-secondary { stroke: var(--clay); opacity: 0.2; }
+.rhythm-bloom-one { stroke: var(--clay); opacity: 0.34; }
+.rhythm-bloom-two { stroke: var(--ochre); opacity: 0.34; }
+.rhythm-note-one { fill: var(--violet); opacity: 0.09; }
+.rhythm-note-two { fill: var(--clay); opacity: 0.09; }
 

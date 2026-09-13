@@ -1,5 +1,6 @@
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
+/** Durable enquiry records retained for the configured privacy window. */
 export const enquiries = sqliteTable(
   "enquiries",
   {
@@ -38,6 +39,7 @@ export const enquiries = sqliteTable(
   ],
 );
 
+/** Expiring counters keyed by a salted client hash and time window. */
 export const enquiryRateLimits = sqliteTable(
   "enquiry_rate_limits",
   {

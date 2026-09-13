@@ -1,5 +1,6 @@
 .legal-main {
   min-height: 70vh;
+  padding-top: 0;
   background: var(--surface-modalities);
 }
 

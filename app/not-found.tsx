@@ -2,6 +2,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import Link from "next/link";
 
+/** Render a branded recovery path for unknown public routes. */
 export default function NotFound() {
   return (
     <div id="top" className="min-h-screen overflow-hidden bg-cream text-ink">

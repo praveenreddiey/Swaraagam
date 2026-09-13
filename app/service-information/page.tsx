@@ -3,6 +3,7 @@ import { CopyEmailAddress } from "@/components/CopyEmailAddress";
 import { LegalPage } from "@/components/LegalPage";
 import { CONTACT_EMAIL, PRACTICE_LOCATION } from "@/lib/site";
 
+/** Define canonical search metadata for the service-information page. */
 export const metadata: Metadata = {
   title: "Service Information",
   description:
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/service-information" },
 };
 
+/** Render practical service, safeguarding, payment and cancellation information. */
 export default function ServiceInformationPage() {
   return (
     <LegalPage

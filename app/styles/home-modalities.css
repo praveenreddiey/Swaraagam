@@ -1,13 +1,17 @@
 .modalities-section {
+  position: relative;
+  overflow: hidden;
+  border-top: 0;
   padding: 68px 0 72px;
-  background: var(--cream);
+  background: var(--surface-modalities);
 }
 
-.section-heading-row {
+.modalities-section .section-heading-row {
   display: flex;
   align-items: end;
-  justify-content: space-between;
+  justify-content: center;
   gap: 60px;
+  text-align: center;
 }
 
 .modalities-grid {
@@ -17,38 +21,6 @@
   margin-top: 36px;
 }
 
-.modality-card {
-  position: relative;
-  display: flex;
-  min-height: 420px;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid rgba(36, 51, 45, 0.12);
-  border-radius: 5px;
-  background: rgba(255, 253, 249, 0.77);
-  padding: 27px 28px 26px;
-  transition: transform 240ms ease, box-shadow 240ms ease, background-color 240ms ease;
-}
-
-.modality-card::before {
-  position: absolute;
-  width: 170px;
-  height: 170px;
-  right: -90px;
-  top: -90px;
-  border-radius: 50%;
-  background: var(--tone-pale);
-  content: "";
-  transition: transform 350ms ease;
-}
-
-.modality-card:hover {
-  background: var(--white);
-  box-shadow: 0 24px 60px rgba(49, 69, 58, 0.11);
-  transform: translateY(-7px);
-}
-
-.modality-card:hover::before { transform: scale(1.3); }
 .modality-card.sage { --tone: var(--sage-deep); --tone-pale: var(--sage-pale); }
 .modality-card.clay { --tone: var(--clay); --tone-pale: var(--clay-pale); }
 .modality-card.ochre { --tone: var(--ochre); --tone-pale: var(--ochre-pale); }
@@ -307,5 +279,25 @@
   height: 4px;
   border-radius: 50%;
   background: var(--tone);
+}
+
+.modalities-section::after {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -72px;
+  bottom: 56px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    var(--clay) 0 10deg,
+    transparent 10deg 22deg
+  );
+  content: "";
+  opacity: 0.18;
+  animation: modality-accent-spin 28s linear infinite;
+}
+
+@keyframes modality-accent-spin {
+  to { transform: rotate(360deg); }
 }
 

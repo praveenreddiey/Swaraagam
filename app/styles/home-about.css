@@ -48,7 +48,8 @@
   gap: 17px;
   margin-top: 34px;
   border-left: 2px solid var(--clay);
-  background: var(--white);
+  border-radius: 0 18px 18px 0;
+  background: var(--surface-process);
   padding: 20px 22px;
 }
 
@@ -68,7 +69,9 @@
 
 .therapist-section {
   position: relative;
-  background: var(--paper);
+  overflow: hidden;
+  border-top: 0;
+  background: var(--surface-about);
 }
 
 .therapist-portrait {
@@ -78,8 +81,12 @@
   place-items: center;
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(255, 253, 249, 0.16), transparent 42%),
-    linear-gradient(155deg, #dce5d8 0%, #c3d0c0 58%, #aebbaf 100%);
+    radial-gradient(
+      circle at 22% 25%,
+      rgba(255, 211, 78, 0.72),
+      transparent 25%
+    ),
+    linear-gradient(140deg, #9be2d2, #e9dcff);
 }
 
 .therapist-portrait::before,
@@ -113,8 +120,8 @@
   place-items: center;
   border: 1px solid rgba(255, 253, 249, 0.75);
   border-radius: 50%;
-  background: rgba(77, 103, 88, 0.9);
-  color: var(--white);
+  background: var(--violet);
+  color: white;
   font-family: var(--font-display);
   font-size: 42px;
   letter-spacing: 0.02em;
@@ -169,17 +176,17 @@
 .therapist-grid {
   display: grid;
   grid-template-columns: minmax(330px, 0.8fr) minmax(0, 1.2fr);
-  align-items: center;
+  align-items: start;
   gap: clamp(48px, 7vw, 88px);
 }
 
 
 .therapist-card {
   overflow: hidden;
-  border: 1px solid rgba(36, 51, 45, 0.14);
-  border-radius: 5px;
+  border: 2px solid var(--ink);
+  border-radius: 24px;
   background: #edf0e8;
-  box-shadow: 0 25px 65px rgba(48, 68, 57, 0.1);
+  box-shadow: 12px 12px 0 #7bd5c4;
 }
 
 .therapist-card-caption {
@@ -325,5 +332,18 @@
 
 .therapist-emphasis span + span {
   margin-left: 0.35em;
+}
+
+.therapist-section::before {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -55px;
+  top: 120px;
+  border: 30px solid #f8bfd8;
+  border-radius: 42% 58% 60% 40%;
+  content: "";
+  opacity: 0.65;
+  transform: rotate(18deg);
 }
 

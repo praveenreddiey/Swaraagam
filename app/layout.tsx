@@ -62,6 +62,7 @@ const structuredData = {
   ],
 };
 
+/** Define site-wide search, social, icon, and crawler metadata. */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -130,6 +131,7 @@ export const metadata: Metadata = {
   },
 };
 
+/** Render the shared document shell, metadata and organization schema. */
 export default function RootLayout({
   children,
 }: Readonly<{

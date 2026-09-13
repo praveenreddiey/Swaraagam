@@ -130,11 +130,10 @@
   position: relative;
   z-index: 3;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 253, 250, 0.12);
-  border-bottom: 1px solid rgba(255, 253, 250, 0.12);
-  background: var(--ink);
+  border: 0;
+  background: var(--surface-ribbon);
   color: var(--white);
-  padding: 14px 0 13px;
+  padding: 10px 0 9px;
 }
 
 .rhythm-ribbon-track,
@@ -145,32 +144,31 @@
 }
 
 .rhythm-ribbon-track {
-  animation: ribbon-travel 36s linear infinite;
+  animation: ribbon-travel 48s linear infinite;
 }
 
 .rhythm-ribbon-group {
-  gap: clamp(34px, 5vw, 74px);
-  padding-right: clamp(34px, 5vw, 74px);
+  gap: 0.25em;
+  padding-right: 0;
 }
 
 .rhythm-ribbon span {
   display: inline-flex;
   align-items: center;
-  gap: clamp(34px, 5vw, 74px);
-  font-family: var(--font-display);
-  font-size: clamp(17px, 1.8vw, 22px);
-  font-style: italic;
+  color: white;
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.25vw, 17px);
+  font-style: normal;
+  font-weight: 400;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .rhythm-ribbon span::after {
-  color: var(--marigold);
-  content: "✦";
-  font-family: var(--font-body);
-  font-size: 8px;
-  font-style: normal;
+  content: none;
 }
+
+.rhythm-ribbon span strong { font-weight: 800; }
 
 [data-reveal] {
   transition:

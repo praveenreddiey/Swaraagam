@@ -193,9 +193,7 @@ test("renders the site, legal pages and production security headers", async () =
     /src="\/swaraagam-guitar-waves-mark\.png"/,
     "the static brand mark must bypass the unsupported production image optimizer",
   );
-  for (const translatedBrandName of [/स्वरागम/, /સ્વરાગમ/, /స్వరాగం/, /ஸ்வராகம்/]) {
-    assert.match(html, translatedBrandName);
-  }
+  assert.match(html, /<strong>swaraagam<\/strong>/i);
   assert.doesNotMatch(html, /\/_vinext\/image\?/);
   assert.match(
     html,

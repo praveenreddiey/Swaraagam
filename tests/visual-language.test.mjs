@@ -43,9 +43,13 @@ test("keeps homepage visuals in focused files below the maintenance ceiling", as
   const globalStyles = await readProjectFile("app", "globals.css");
   assert.match(globalStyles, /styles\/visual-language\.css/u);
   assert.match(globalStyles, /styles\/responsive\.css/u);
-  assert.match(globalStyles, /styles\/playful-foundation\.css/u);
-  assert.match(globalStyles, /styles\/playful-sections\.css/u);
   assert.match(globalStyles, /styles\/modality-cards\.css/u);
+  assert.doesNotMatch(globalStyles, /playful-(?:foundation|sections)\.css/u);
+  assert.ok(
+    globalStyles.indexOf("styles/responsive.css") >
+      globalStyles.indexOf("styles/modality-cards.css"),
+    "shared responsive overrides should load after component styles",
+  );
 });
 
 test("self-hosts licensed display and body fonts", async () => {
@@ -72,66 +76,60 @@ test("self-hosts licensed display and body fonts", async () => {
 
 test("keeps decorative motion optional and independent of the reference website", async () => {
   const visualStyles = await readProjectFile("app", "styles", "visual-language.css");
-  const playfulFoundation = await readProjectFile(
-    "app",
-    "styles",
-    "playful-foundation.css",
-  );
-  const playfulSections = await readProjectFile("app", "styles", "playful-sections.css");
+  const heroStyles = await readProjectFile("app", "styles", "home-hero.css");
+  const responsiveStyles = await readProjectFile("app", "styles", "responsive.css");
   const revealSource = await readProjectFile(
     "components",
     "home",
     "RevealOnScroll.tsx",
   );
-  const combinedSource = `${visualStyles}\n${playfulFoundation}\n${playfulSections}\n${revealSource}`;
+  const combinedSource = `${visualStyles}\n${heroStyles}\n${responsiveStyles}\n${revealSource}`;
 
   assert.match(visualStyles, /prefers-reduced-motion:\s*reduce/u);
   assert.match(visualStyles, /animation:\s*none/u);
-  assert.match(playfulFoundation, /\.rhythm-wash,[\s\S]*animation:\s*none/u);
-  assert.match(playfulSections, /prefers-reduced-motion:\s*reduce/u);
+  assert.match(heroStyles, /\.rhythm-wash,[\s\S]*animation:\s*none/u);
+  assert.match(responsiveStyles, /prefers-reduced-motion:\s*reduce/u);
   assert.match(revealSource, /IntersectionObserver/u);
   assert.match(revealSource, /prefers-reduced-motion:\s*reduce/u);
   assert.doesNotMatch(combinedSource, /secondwind\.org\.in|custom-domains\.chatgpt\.site/iu);
 });
 
 test("gives each major section a distinct solid color identity", async () => {
-  const playfulFoundation = await readProjectFile(
-    "app",
-    "styles",
-    "playful-foundation.css",
-  );
-  const playfulSections = await readProjectFile(
-    "app",
-    "styles",
-    "playful-sections.css",
-  );
+  const foundationStyles = await readProjectFile("app", "styles", "foundation.css");
+  const heroStyles = await readProjectFile("app", "styles", "home-hero.css");
+  const aboutStyles = await readProjectFile("app", "styles", "home-about.css");
+  const modalityStyles = await readProjectFile("app", "styles", "home-modalities.css");
+  const processStyles = await readProjectFile("app", "styles", "home-process-faq.css");
+  const bookingStyles = await readProjectFile("app", "styles", "home-booking.css");
+  const visualStyles = await readProjectFile("app", "styles", "visual-language.css");
+  const footerStyles = await readProjectFile("app", "styles", "site-footer.css");
   const legalStyles = await readProjectFile("app", "styles", "legal.css");
 
-  assert.match(playfulFoundation, /--surface-hero:/u);
-  assert.match(playfulFoundation, /--surface-ribbon:/u);
-  assert.match(playfulFoundation, /--surface-footer:/u);
-  assert.match(playfulFoundation, /--card-backplate-color:\s*#ffd34e/u);
-  assert.match(playfulFoundation, /--card-backplate-offset:\s*12px/u);
-  assert.match(playfulFoundation, /--nav-accent:/u);
-  assert.match(playfulFoundation, /\.hero-section[\s\S]*var\(--surface-hero\)/u);
-  assert.match(playfulSections, /\.therapist-section[\s\S]*background:\s*var\(--surface-about\)/u);
-  assert.match(playfulSections, /\.therapist-process[\s\S]*background:\s*var\(--surface-process\)/u);
-  assert.match(playfulSections, /\.modalities-section[\s\S]*background:\s*var\(--surface-modalities\)/u);
-  assert.match(playfulSections, /\.modalities-section \.section-heading-row[\s\S]*justify-content:\s*center/u);
-  assert.match(playfulSections, /\.faq-section[\s\S]*background:\s*var\(--surface-faq\)/u);
-  assert.match(playfulSections, /\.booking-section[\s\S]*background:\s*var\(--surface-booking\)/u);
+  assert.match(foundationStyles, /--surface-hero:/u);
+  assert.match(foundationStyles, /--surface-ribbon:/u);
+  assert.match(foundationStyles, /--surface-footer:/u);
+  assert.match(foundationStyles, /--card-backplate-color:\s*#ffd34e/u);
+  assert.match(foundationStyles, /--card-backplate-offset:\s*12px/u);
+  assert.match(foundationStyles, /--nav-accent:/u);
+  assert.match(heroStyles, /\.hero-section[\s\S]*var\(--surface-hero\)/u);
+  assert.match(aboutStyles, /\.therapist-section[\s\S]*background:\s*var\(--surface-about\)/u);
+  assert.match(processStyles, /\.therapist-process[\s\S]*background:\s*var\(--surface-process\)/u);
+  assert.match(modalityStyles, /\.modalities-section[\s\S]*background:\s*var\(--surface-modalities\)/u);
+  assert.match(modalityStyles, /\.modalities-section \.section-heading-row[\s\S]*justify-content:\s*center/u);
+  assert.match(processStyles, /\.faq-section[\s\S]*background:\s*var\(--surface-faq\)/u);
+  assert.match(bookingStyles, /\.booking-section[\s\S]*background:\s*var\(--surface-booking\)/u);
   assert.match(
-    playfulSections,
+    bookingStyles,
     /\.contact-form[\s\S]*box-shadow:\s*var\(--card-backplate-offset\)\s+var\(--card-backplate-offset\)\s+0\s+var\(--card-backplate-color\)/u,
   );
   assert.match(
-    playfulFoundation,
+    heroStyles,
     /\.hero-side[\s\S]*box-shadow:\s*var\(--card-backplate-offset\)\s+var\(--card-backplate-offset\)\s+0\s+var\(--card-backplate-color\)/u,
   );
-  assert.match(playfulSections, /\.rhythm-ribbon[\s\S]*background:\s*var\(--surface-ribbon\)/u);
-  assert.match(playfulSections, /\.site-footer[\s\S]*background:\s*var\(--surface-footer\)/u);
-  assert.doesNotMatch(playfulFoundation, /\.hero-section[\s\S]*linear-gradient/u);
-  assert.doesNotMatch(playfulSections, /\.rhythm-ribbon[\s\S]*linear-gradient/u);
+  assert.match(visualStyles, /\.rhythm-ribbon[\s\S]*background:\s*var\(--surface-ribbon\)/u);
+  assert.match(footerStyles, /\.site-footer[\s\S]*background:\s*var\(--surface-footer\)/u);
+  assert.doesNotMatch(heroStyles, /\.hero-section[\s\S]*linear-gradient/u);
+  assert.doesNotMatch(visualStyles, /\.rhythm-ribbon[\s\S]*linear-gradient/u);
   assert.match(legalStyles, /\.legal-main[\s\S]*background:\s*var\(--surface-modalities\)/u);
   assert.match(legalStyles, /\.legal-hero[\s\S]*background:\s*var\(--surface-hero\)/u);
   assert.doesNotMatch(legalStyles, /\.legal-hero \.eyebrow/u);
@@ -149,16 +147,11 @@ test("gives each major section a distinct solid color identity", async () => {
 });
 
 test("keeps navigation centered and footer controls free of separator rules", async () => {
-  const playfulFoundation = await readProjectFile(
-    "app",
-    "styles",
-    "playful-foundation.css",
-  );
-  const playfulSections = await readProjectFile(
-    "app",
-    "styles",
-    "playful-sections.css",
-  );
+  const foundationStyles = await readProjectFile("app", "styles", "foundation.css");
+  const heroStyles = await readProjectFile("app", "styles", "home-hero.css");
+  const visualStyles = await readProjectFile("app", "styles", "visual-language.css");
+  const footerStyles = await readProjectFile("app", "styles", "site-footer.css");
+  const responsiveStyles = await readProjectFile("app", "styles", "responsive.css");
   const legalStyles = await readProjectFile("app", "styles", "legal.css");
   const modalityCards = await readProjectFile(
     "app",
@@ -166,42 +159,44 @@ test("keeps navigation centered and footer controls free of separator rules", as
     "modality-cards.css",
   );
 
-  assert.match(playfulFoundation, /scrollbar-width:\s*none/u);
-  assert.match(playfulFoundation, /\.site-header-navigation-row[\s\S]*border:\s*0/u);
-  assert.match(playfulFoundation, /\.site-header-navigation-shell[\s\S]*justify-content:\s*center[\s\S]*gap:/u);
-  assert.match(playfulFoundation, /\.header-booking-link[\s\S]*position:\s*static/u);
-  assert.match(playfulFoundation, /\.site-menu \.nav-link[\s\S]*color:\s*var\(--nav-accent\)/u);
-  assert.match(playfulFoundation, /\.site-header-brand-row[\s\S]*min-height:\s*150px/u);
-  assert.match(playfulFoundation, /\.brand-centered \.brand-mark[\s\S]*width:\s*98px/u);
-  assert.match(playfulFoundation, /\.brand-centered strong[\s\S]*font-size:\s*clamp\(49px/u);
-  assert.match(playfulFoundation, /\.hero-title[\s\S]*font-size:\s*clamp\(50px/u);
-  assert.doesNotMatch(playfulFoundation, /\.brand-centered \.brand-name-layer[\s\S]*transition:\s*none/u);
-  assert.match(playfulFoundation, /\.site-menu \.nav-link[\s\S]*font-size:\s*15px/u);
-  assert.match(playfulFoundation, /\.site-menu \.nav-link[\s\S]*font-weight:\s*500/u);
-  assert.match(playfulFoundation, /\.site-menu \.nav-link::after[\s\S]*opacity:\s*0;/u);
-  assert.match(playfulFoundation, /\.nav-link-active::after/u);
+  assert.match(foundationStyles, /scrollbar-width:\s*thin/u);
+  assert.doesNotMatch(foundationStyles, /scrollbar-width:\s*none/u);
+  assert.match(foundationStyles, /\.site-header-navigation-row[\s\S]*border:\s*0/u);
+  assert.match(foundationStyles, /\.site-header-navigation-shell[\s\S]*justify-content:\s*center[\s\S]*gap:/u);
+  assert.match(foundationStyles, /\.header-booking-link[\s\S]*position:\s*static/u);
+  assert.match(foundationStyles, /\.site-menu \.nav-link[\s\S]*color:\s*var\(--nav-accent\)/u);
+  assert.match(foundationStyles, /\.site-header-brand-row[\s\S]*min-height:\s*150px/u);
+  assert.match(foundationStyles, /\.brand-centered \.brand-mark[\s\S]*width:\s*98px/u);
+  assert.match(foundationStyles, /\.brand-centered strong[\s\S]*font-size:\s*clamp\(49px/u);
+  assert.match(heroStyles, /\.hero-title[\s\S]*font-size:\s*clamp\(50px/u);
+  assert.match(foundationStyles, /\.site-menu \.nav-link[\s\S]*font-size:\s*15px/u);
+  assert.match(foundationStyles, /\.site-menu \.nav-link[\s\S]*font-weight:\s*500/u);
+  assert.match(foundationStyles, /\.site-menu \.nav-link::after[\s\S]*opacity:\s*0;/u);
+  assert.match(foundationStyles, /\.nav-link-active::after/u);
+  assert.match(responsiveStyles, /\.site-header-navigation-row[\s\S]*display:\s*block/u);
   assert.match(modalityCards, /\.modality-card-inner[\s\S]*transform-style:\s*preserve-3d/u);
   assert.match(modalityCards, /\.modalities-grid[\s\S]*grid-auto-rows:\s*auto/u);
-  assert.match(modalityCards, /\.modality-card[\s\S]*height:\s*280px/u);
+  assert.match(modalityCards, /--modality-card-collapsed-height:\s*280px/u);
+  assert.match(modalityCards, /--modality-card-expanded-height:\s*620px/u);
   assert.match(modalityCards, /\.modality-card\.is-flipped \.modality-card-inner[\s\S]*rotateY\(180deg\)/u);
-  assert.match(modalityCards, /\.modality-card\.is-flipped[\s\S]*height:\s*520px/u);
-  assert.match(modalityCards, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)[\s\S]*\.modality-card:hover \.modality-card-inner[\s\S]*rotateY\(180deg\)/u);
+  assert.match(modalityCards, /\.modality-card\.is-flipped[\s\S]*height:\s*var\(--modality-card-expanded-height\)/u);
+  assert.doesNotMatch(modalityCards, /\.modality-card:hover \.modality-card-inner/u);
   assert.match(modalityCards, /\.modality-card-face[\s\S]*backface-visibility:\s*hidden/u);
   assert.match(modalityCards, /\.modality-card-front-content[\s\S]*margin:\s*auto 0/u);
   assert.match(modalityCards, /\.modality-card-back \.card-description[\s\S]*margin-bottom:\s*18px/u);
   assert.match(modalityCards, /\.modality-card\.sage[\s\S]*--tone-pale:\s*var\(--sky-pale\)/u);
   assert.match(modalityCards, /\.modality-card\.sage \.modality-card-face[\s\S]*background:\s*var\(--sky-pale\)/u);
-  assert.match(playfulSections, /\.rhythm-ribbon[\s\S]*border:\s*0/u);
-  assert.match(playfulSections, /\.rhythm-ribbon span[\s\S]*font-family:\s*var\(--font-body\)/u);
-  assert.match(playfulSections, /\.rhythm-ribbon span[\s\S]*font-style:\s*normal/u);
-  assert.match(playfulSections, /\.rhythm-ribbon span strong[\s\S]*font-weight:\s*800/u);
-  assert.match(playfulSections, /\.rhythm-ribbon-group[\s\S]*gap:\s*0\.25em/u);
-  assert.match(playfulSections, /\.rhythm-ribbon-group[\s\S]*padding-right:\s*0/u);
-  assert.match(playfulSections, /\.back-to-top[\s\S]*width:\s*42px/u);
-  assert.match(playfulSections, /\.back-to-top[\s\S]*border-radius:\s*50%/u);
-  assert.match(playfulSections, /\.site-footer \.back-to-top[\s\S]*position:\s*absolute/u);
-  assert.match(playfulSections, /\.site-footer \.footer-bottom > span[\s\S]*font-size:\s*12px/u);
-  assert.doesNotMatch(playfulSections, /crisis-note/u);
+  assert.match(visualStyles, /\.rhythm-ribbon[\s\S]*border:\s*0/u);
+  assert.match(visualStyles, /\.rhythm-ribbon span[\s\S]*font-family:\s*var\(--font-body\)/u);
+  assert.match(visualStyles, /\.rhythm-ribbon span[\s\S]*font-style:\s*normal/u);
+  assert.match(visualStyles, /\.rhythm-ribbon span strong[\s\S]*font-weight:\s*800/u);
+  assert.match(visualStyles, /\.rhythm-ribbon-group[\s\S]*gap:\s*0\.25em/u);
+  assert.match(visualStyles, /\.rhythm-ribbon-group[\s\S]*padding-right:\s*0/u);
+  assert.match(footerStyles, /\.back-to-top[\s\S]*width:\s*42px/u);
+  assert.match(footerStyles, /\.back-to-top[\s\S]*border-radius:\s*50%/u);
+  assert.match(footerStyles, /\.site-footer \.back-to-top[\s\S]*position:\s*absolute/u);
+  assert.match(footerStyles, /\.site-footer \.footer-bottom > span[\s\S]*font-size:\s*12px/u);
+  assert.doesNotMatch(footerStyles, /crisis-note/u);
   assert.doesNotMatch(legalStyles, /section \+ section[\s\S]*border-top/u);
 });
 
@@ -217,7 +212,8 @@ test("composes the homepage from its new visual-language elements", async () => 
   const ribbonPosition = footerSource.indexOf("<RhythmRibbon />");
 
   assert.match(pageSource, /<HeroSection\s*\/>/u);
-  assert.match(headerSource, /<RotatingBrandName animated=\{false\}\s*\/>/u);
+  assert.match(headerSource, /<strong>swaraagam<\/strong>/u);
+  assert.match(headerSource, /<PrimaryNavigation\s*\/>/u);
   assert.doesNotMatch(pageSource, /RhythmRibbon/u);
   assert.match(footerSource, /<RhythmRibbon\s*\/>/u);
   assert.ok(ribbonPosition >= 0, "the rhythm ribbon should remain in the footer");

@@ -1,3 +1,4 @@
+/** Shared public-site identity, contact and retention configuration. */
 export const SITE_NAME = "Swaraagam";
 export const SITE_DESCRIPTION =
   "A gentle, collaborative therapeutic practice offering counselling, arts-based therapy and music-informed support online across India and in person in Mumbai.";

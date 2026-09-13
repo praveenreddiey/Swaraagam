@@ -9,7 +9,5 @@
 @import "./styles/site-footer.css";
 @import "./styles/legal.css";
 @import "./styles/visual-language.css";
-@import "./styles/responsive.css";
-@import "./styles/playful-foundation.css";
-@import "./styles/playful-sections.css";
 @import "./styles/modality-cards.css";
+@import "./styles/responsive.css";

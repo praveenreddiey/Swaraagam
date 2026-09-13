@@ -3,6 +3,7 @@ import { CopyEmailAddress } from "@/components/CopyEmailAddress";
 import { RhythmRibbon } from "@/components/home/RhythmRibbon";
 import { CONTACT_EMAIL } from "@/lib/site";
 
+/** Render the shared ribbon, legal destinations, contact action and back-to-top control. */
 export function SiteFooter() {
   return (
     <footer className="site-footer">

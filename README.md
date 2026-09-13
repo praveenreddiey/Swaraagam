@@ -38,8 +38,14 @@ npm run check
 ```
 
 This runs lint, strict TypeScript validation, a production build, integration
-tests in an isolated Cloudflare-compatible runtime with D1, and a production
-dependency audit.
+tests in an isolated Cloudflare-compatible runtime with D1, Playwright browser
+checks at desktop and narrow mobile widths, and a production dependency audit.
+
+Install the Playwright Chromium runtime once after `npm ci`:
+
+```bash
+npx playwright install chromium
+```
 
 ## Appointment-request reliability
 
@@ -66,7 +72,7 @@ data retention, deployment checks and the remaining custom-domain work.
 - `components/`: shared navigation, footer and appointment-request form
 - `db/`: D1 schema and persistence helpers
 - `worker/`: Cloudflare entry point and security headers
-- `tests/`: production-build integration tests
+- `tests/`: production-build integration and browser interaction tests
 - `wrangler.example.jsonc`: safe template for your Worker and D1 binding
 
 ## Deployment

@@ -4,6 +4,7 @@ import { enquiries, enquiryRateLimits } from "./schema";
 
 const ENQUIRY_RETENTION_MS = 180 * 24 * 60 * 60 * 1_000;
 
+/** Validated visitor fields persisted for one appointment request. */
 export type StoredEnquiry = {
   id: string;
   name: string;
@@ -17,6 +18,7 @@ export type StoredEnquiry = {
   note: string;
 };
 
+/** Persist one validated enquiry and return the stored record for idempotency checks. */
 export async function saveEnquiry(enquiry: StoredEnquiry) {
   const db = getDb();
   const now = Date.now();
@@ -52,6 +54,7 @@ export async function saveEnquiry(enquiry: StoredEnquiry) {
     .get();
 }
 
+/** Atomically reserve a notification attempt unless the enquiry was already accepted. */
 export async function beginNotificationAttempt(id: string) {
   const db = getDb();
   const now = Date.now();
@@ -77,6 +80,7 @@ export async function beginNotificationAttempt(id: string) {
   return Boolean(result);
 }
 
+/** Record a successful notification and its optional provider identifier. */
 export async function markNotificationAccepted(
   id: string,
   providerMessageId: string | null,
@@ -94,6 +98,7 @@ export async function markNotificationAccepted(
     .where(eq(enquiries.id, id));
 }
 
+/** Record a bounded provider failure reason while retaining the enquiry. */
 export async function markNotificationFailed(id: string, reason: string) {
   await getDb()
     .update(enquiries)
@@ -105,6 +110,7 @@ export async function markNotificationFailed(id: string, reason: string) {
     .where(eq(enquiries.id, id));
 }
 
+/** Increment a hashed-client rate-limit bucket and report whether it exceeded its limit. */
 export async function consumeRateLimit(
   clientHash: string,
   windowMs: number,

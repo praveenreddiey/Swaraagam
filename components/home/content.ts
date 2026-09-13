@@ -1,5 +1,6 @@
 /** Shared, immutable homepage copy used by the process, modality and FAQ sections. */
 
+/** Supported concepts in the decorative homepage icon set. */
 export type LineIconName =
   | "counselling"
   | "arts"
@@ -31,6 +32,7 @@ interface Faq {
   answer: string;
 }
 
+/** Visitor-facing modality summaries and expanded-card details. */
 export const MODALITIES: readonly Modality[] = [
   {
     number: "01",
@@ -64,6 +66,7 @@ export const MODALITIES: readonly Modality[] = [
   },
 ];
 
+/** Ordered steps used to explain the therapeutic process. */
 export const PROCESS_STEPS: readonly ProcessStep[] = [
   {
     number: "01",
@@ -88,6 +91,7 @@ export const PROCESS_STEPS: readonly ProcessStep[] = [
   },
 ];
 
+/** Frequently asked questions shown before the enquiry form. */
 export const FAQS: readonly Faq[] = [
   {
     question: "What happens in the first session?",

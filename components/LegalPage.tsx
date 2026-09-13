@@ -10,6 +10,7 @@ type LegalPageProps = {
   children: ReactNode;
 };
 
+/** Render a long-form information page inside the shared public-site frame. */
 export function LegalPage({
   title,
   summary,

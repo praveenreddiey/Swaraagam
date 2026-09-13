@@ -1,5 +1,6 @@
 .site-footer {
-  background: #f6f1e8;
+  background: var(--surface-footer);
+  color: white;
   padding: 0;
 }
 
@@ -69,6 +70,55 @@
 
 .footer-bottom > div { display: flex; justify-content: center; gap: 24px; }
 .back-to-top { font-weight: 700; }
+
+.site-footer .footer-bottom { color: white; }
+
+.site-footer .footer-bottom a,
+.site-footer .footer-bottom .copy-email-button {
+  color: #f6c7dd;
+}
+
+.site-footer .footer-bottom > span { font-size: 12px; }
+
+.site-footer .back-to-top {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.back-to-top {
+  position: relative;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--violet);
+  color: white;
+  font-size: 0;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.back-to-top > span[aria-hidden="true"] {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.back-to-top-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.site-footer .back-to-top:is(:hover, :focus-visible) {
+  background: var(--clay);
+  transform: translateY(calc(-50% - 3px));
+}
 
 [data-reveal] {
   opacity: 1;

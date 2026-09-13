@@ -4,7 +4,9 @@
 }
 
 .modality-card {
-  height: 280px;
+  --modality-card-collapsed-height: 280px;
+  --modality-card-expanded-height: 620px;
+  height: var(--modality-card-collapsed-height);
   min-height: 0;
   overflow: visible;
   border: 0;
@@ -12,6 +14,7 @@
   background: transparent;
   box-shadow: none;
   cursor: pointer;
+  padding: 0;
   perspective: 1200px;
   transition: height 420ms ease, transform 240ms ease;
 }
@@ -92,7 +95,7 @@
 }
 
 .modality-card-back ul {
-  margin-bottom: 0;
+  margin-bottom: 52px;
 }
 
 .modality-card.sage {
@@ -155,26 +158,13 @@
 }
 
 .modality-card.is-flipped {
-  height: 520px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .modality-card:hover {
-    height: 520px;
-  }
-
-  .modality-card:hover .modality-card-inner {
-    transform: rotateY(180deg);
-  }
+  height: var(--modality-card-expanded-height);
 }
 
 @media (max-width: 780px) {
   .modality-card {
-    height: 260px;
-  }
-
-  .modality-card.is-flipped {
-    height: 540px;
+    --modality-card-collapsed-height: 260px;
+    --modality-card-expanded-height: 680px;
   }
 }
 

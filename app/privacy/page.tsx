@@ -7,6 +7,7 @@ import {
   PRACTICE_LOCATION,
 } from "@/lib/site";
 
+/** Define canonical search metadata for the privacy notice. */
 export const metadata: Metadata = {
   title: "Privacy Notice",
   description:
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
+/** Render the privacy notice for website visitors and enquiry submitters. */
 export default function PrivacyPage() {
   return (
     <LegalPage

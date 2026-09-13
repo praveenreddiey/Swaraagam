@@ -34,6 +34,7 @@ async function copyToClipboard(value: string) {
   }
 }
 
+/** Copy a supplied email address and announce the result without navigating away. */
 export function CopyEmailAddress({ email }: { email: string }) {
   const [state, setState] = useState<CopyState>("idle");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

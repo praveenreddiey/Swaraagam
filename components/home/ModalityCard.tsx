@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from "react";
 import { LineIcon } from "./LineIcon";
 import type { MODALITIES } from "./content";
 
@@ -16,14 +22,90 @@ function isActivationKey(event: KeyboardEvent<HTMLElement>) {
 
 /** Render one modality as a keyboard-accessible card that flips to its details. */
 export function ModalityCard({ item }: ModalityCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const cardRef = useRef<HTMLElement>(null);
+  const backFaceRef = useRef<HTMLDivElement>(null);
+  const isPointerOverRef = useRef(false);
+  const [isPinned, setIsPinned] = useState(false);
+  const [isPointerOver, setIsPointerOver] = useState(false);
+  const [isHoverSuppressed, setIsHoverSuppressed] = useState(false);
+  const isFlipped = isPinned || (isPointerOver && !isHoverSuppressed);
   const detailsId = `modality-details-${item.number}`;
   const actionLabel = isFlipped
     ? `${item.title}. Activate to return to the overview.`
     : `${item.title}. Activate to view details.`;
 
+  useEffect(() => {
+    const card = cardRef.current;
+    const backFace = backFaceRef.current;
+    if (!card || !backFace) return;
+
+    let measuredWidth = -1;
+
+    // Measure flowing content rather than scrollHeight so expanding the card
+    // cannot create a ResizeObserver feedback loop.
+    function updateExpandedHeight(force = false) {
+      if (!card || !backFace) return;
+      if (!force && backFace.clientWidth === measuredWidth) return;
+
+      measuredWidth = backFace.clientWidth;
+      const details = backFace.querySelector("ul");
+      if (!details) return;
+
+      const styles = window.getComputedStyle(backFace);
+      const detailsStyles = window.getComputedStyle(details);
+      const paddingBottom = Number.parseFloat(styles.paddingBottom) || 0;
+      const detailsMarginBottom =
+        Number.parseFloat(detailsStyles.marginBottom) || 0;
+      const borderAllowance = 4;
+      const requiredHeight = Math.ceil(
+        details.offsetTop +
+          details.offsetHeight +
+          detailsMarginBottom +
+          paddingBottom +
+          borderAllowance,
+      );
+
+      card.style.setProperty(
+        "--modality-card-expanded-height",
+        `${requiredHeight}px`,
+      );
+    }
+
+    updateExpandedHeight();
+    const resizeObserver = new ResizeObserver(() => updateExpandedHeight());
+    resizeObserver.observe(backFace);
+    void document.fonts?.ready.then(() => updateExpandedHeight(true));
+    card.dataset.interactive = "true";
+
+    return () => {
+      resizeObserver.disconnect();
+      delete card.dataset.interactive;
+    };
+  }, []);
+
   function toggleCard() {
-    setIsFlipped((current) => !current);
+    if (isPinned) {
+      setIsPinned(false);
+      setIsHoverSuppressed(isPointerOverRef.current);
+      return;
+    }
+
+    setIsPinned(true);
+    setIsHoverSuppressed(false);
+  }
+
+  function handlePointerEnter(event: PointerEvent<HTMLElement>) {
+    if (event.pointerType !== "mouse") return;
+    isPointerOverRef.current = true;
+    setIsPointerOver(true);
+    setIsHoverSuppressed(false);
+  }
+
+  function handlePointerLeave(event: PointerEvent<HTMLElement>) {
+    if (event.pointerType !== "mouse") return;
+    isPointerOverRef.current = false;
+    setIsPointerOver(false);
+    setIsHoverSuppressed(false);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
@@ -35,6 +117,7 @@ export function ModalityCard({ item }: ModalityCardProps) {
 
   return (
     <article
+      ref={cardRef}
       className={`modality-card ${item.tone}${isFlipped ? " is-flipped" : ""}`}
       role="button"
       tabIndex={0}
@@ -43,6 +126,8 @@ export function ModalityCard({ item }: ModalityCardProps) {
       aria-label={actionLabel}
       onClick={toggleCard}
       onKeyDown={handleKeyDown}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
     >
       <div className="modality-card-inner">
         <div className="modality-card-face modality-card-front" aria-hidden={isFlipped}>
@@ -62,6 +147,7 @@ export function ModalityCard({ item }: ModalityCardProps) {
         </div>
 
         <div
+          ref={backFaceRef}
           className="modality-card-face modality-card-back"
           id={detailsId}
           aria-hidden={!isFlipped}

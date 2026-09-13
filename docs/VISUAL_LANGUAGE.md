@@ -24,14 +24,13 @@ expected from a counselling practice.
   pairs cleanly with the more expressive headings.
 - Both families are self-hosted from `public/fonts/`. Their SIL Open Font
   License files must remain beside the font assets.
-- The multilingual wordmark component remains available for a future language
-  pass, using established system fallbacks because the Latin font files do not
-  contain those scripts.
+- The header uses a static English wordmark so the brand is clear without
+  shipping unnecessary client-side state or timers.
 
 ## Color
 
-The base tokens live in `app/styles/foundation.css`; the public-facing expressive
-palette is applied in `app/styles/playful-foundation.css`:
+The complete public-facing palette and shared tokens live in
+`app/styles/foundation.css`:
 
 - paper cream keeps copy readable and gives collage shapes room to breathe;
 - plum ink anchors headings and long-form content;
@@ -78,8 +77,9 @@ Motion lives in `app/styles/visual-language.css`, with viewport observation in
   repeating the site information already provided in the header.
 - Section reveals use opacity and a short vertical translation only.
 - Process icons move gently. Modality cards begin with a compact heading-only
-  footprint, then expand and flip on hover for mouse users or on click, Enter
-  or Space to reveal details.
+  footprint, then expand and flip from one synchronized interaction state on
+  mouse hover, click, Enter or Space. Their expanded height is measured from
+  the rendered details so narrow screens never clip content.
 - All animations stop under `prefers-reduced-motion: reduce`.
 
 Avoid autoplay video, rapid parallax, scroll hijacking and large cursor-following
@@ -100,19 +100,15 @@ therapy space. Record the license or ownership source beside every new asset.
 
 - `app/globals.css` is an import manifest only.
 - `app/styles/foundation.css` owns tokens, fonts, reset and shared primitives.
-- `app/styles/home-*.css` owns existing homepage sections.
-- `app/styles/visual-language.css` owns decorative visuals and motion.
-- `app/styles/responsive.css` owns shared responsive overrides.
-- `app/styles/playful-foundation.css` owns the expressive palette, two-row header
-  and static hero overrides.
-- `app/styles/playful-sections.css` owns colorful section surfaces and lower-page
-  motion.
+- `app/styles/home-*.css` owns each homepage section's complete visual rules.
+- `app/styles/visual-language.css` owns shared decorative visuals and ribbon motion.
+- `app/styles/modality-cards.css` owns the interactive card faces and flip transition.
+- `app/styles/responsive.css` loads last and owns shared responsive overrides.
 - `app/styles/legal.css` owns the painted legal-page hero, continuous reading
   column, single teal section accent and the no-gradient not-found state.
-- `app/styles/modality-cards.css` owns the interactive modality card faces and
-  flip transition.
 - `components/home/` owns homepage-only markup and content constants.
 
 Keep each source file below the repository's 400-line soft ceiling. The visual
 language test enforces this boundary and verifies font licensing and reduced
-motion support.
+motion support. Playwright tests cover navigation state, card interactions,
+narrow-screen overflow and mobile access to footer destinations.
