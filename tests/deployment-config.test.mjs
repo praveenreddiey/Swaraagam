@@ -35,13 +35,16 @@ test("deploys main only after validation and keeps manual deployment available",
   assert.match(deploymentWorkflow, /^\s{2}workflow_dispatch:\s*$/mu);
   assert.doesNotMatch(deploymentWorkflow, /^\s{2}pull_request:\s*$/mu);
 
-  const validationStepIndex = deploymentWorkflow.indexOf("run: npm run check");
+  const validationStepIndex = deploymentWorkflow.indexOf(
+    "run: npm run check:deploy",
+  );
   const deploymentStepIndex = deploymentWorkflow.indexOf(
     "name: Apply migrations and deploy",
   );
   assert.notEqual(validationStepIndex, -1);
   assert.notEqual(deploymentStepIndex, -1);
   assert.ok(validationStepIndex < deploymentStepIndex);
+  assert.match(deploymentWorkflow, /run: npm run check:deploy/);
 
   assert.match(deploymentWorkflow, /d1 migrations apply .+ --remote/);
   assert.match(deploymentWorkflow, /deploy --config wrangler\.jsonc/);

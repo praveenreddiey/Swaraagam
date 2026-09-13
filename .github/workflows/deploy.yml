@@ -81,7 +81,7 @@ jobs:
             wrangler.example.jsonc > wrangler.jsonc
 
       - name: Validate and build
-        run: npm run check
+        run: npm run check:deploy
 
       - name: Apply migrations and deploy
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
