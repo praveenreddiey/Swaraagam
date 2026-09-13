@@ -91,7 +91,7 @@
   .legal-hero { padding: 36px 0 42px; }
   .legal-hero h1 { font-size: clamp(45px, 14vw, 62px); }
   .legal-summary { font-size: 16px; }
-  .legal-content section + section { margin-top: 20px; padding-top: 24px; }
+  .legal-content section + section { margin-top: 34px; }
 }
 
 @media (max-width: 780px) {
