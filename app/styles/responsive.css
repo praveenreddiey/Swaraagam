@@ -1,0 +1,163 @@
+@media (max-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr 0.86fr; gap: 34px; }
+  .hero-title { font-size: clamp(54px, 7vw, 72px); }
+  .about-grid { gap: 7vw; }
+  .modalities-grid { gap: 13px; }
+  .modality-card { padding-inline: 22px; }
+  .booking-grid { gap: 6vw; }
+}
+
+@media (max-width: 780px) {
+  .page-shell { width: min(100% - 34px, 620px); }
+  .site-header .button-small { display: none; }
+  .hero-section { padding-top: 94px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 30px; min-height: auto; padding-bottom: 52px; }
+  .hero-copy { padding: 24px 0 0; }
+  .hero-title { max-width: 610px; font-size: clamp(54px, 14vw, 72px); }
+  .hero-lede { max-width: 580px; font-size: 17px; }
+  .hero-side { width: 100%; max-width: 620px; justify-self: start; border-top: 1px solid rgba(77, 103, 88, 0.25); border-left: 0; padding: 27px 0 0; }
+  .hero-side::before { left: 0; top: -5px; }
+  .hero-actions { justify-content: flex-start; justify-self: start; }
+
+  .section-pad { padding: 64px 0; }
+  .about-grid { grid-template-columns: 1fr; gap: 35px; }
+  .about-copy { max-width: 600px; padding: 0; }
+  .modalities-section { padding: 60px 0 64px; }
+  .section-heading-row { display: block; }
+  .section-intro { margin: 22px 0 0; }
+  .modalities-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 32px; }
+  .modality-card { min-height: 0; }
+  .process-list { grid-template-columns: 1fr; gap: 0; }
+  .process-list li { grid-template-columns: 60px 1fr; justify-items: start; gap: 24px; padding: 0 0 48px; text-align: left; }
+  .process-list li:last-child { padding-bottom: 0; }
+  .step-number { width: 58px; height: 58px; }
+  .step-line { width: 1px; height: calc(100% - 30px); left: 29px; top: 58px; background-image: linear-gradient(to bottom, rgba(77, 103, 88, .45) 33%, transparent 0%); background-size: 1px 8px; background-repeat: repeat-y; }
+  .step-copy > p { margin-top: 3px; }
+  .booking-section { padding: 64px 0; }
+  .booking-grid { grid-template-columns: 1fr; gap: 48px; }
+  .booking-intro { position: static; padding: 0; }
+  .faq-section { padding: 60px 0; }
+  .faq-grid { grid-template-columns: 1fr; gap: 38px; }
+  .faq-heading { position: static; }
+  .mobile-booking-bar {
+    position: fixed;
+    z-index: 50;
+    display: block;
+    inset: auto 0 0;
+    border-top: 1px solid rgba(36, 51, 45, 0.14);
+    background: rgba(247, 243, 235, 0.94);
+    padding: 10px max(17px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(17px, env(safe-area-inset-left));
+    backdrop-filter: blur(14px);
+  }
+  .mobile-booking-bar .button { width: 100%; min-height: 48px; }
+  .mobile-booking-bar ~ .site-footer { padding-bottom: 92px; }
+  .footer-main { grid-template-columns: 1fr 1fr; }
+  .footer-main > p { display: none; }
+  .legal-hero { padding: 62px 0 44px; }
+  .legal-content { padding: 48px 0 64px; }
+}
+
+@media (max-width: 560px) {
+  .page-shell { width: calc(100% - 34px); }
+  .site-header { position: absolute; }
+  .brand strong { font-size: 19px; }
+  .brand small { font-size: 7px; }
+  .brand-mark { width: 36px; height: 36px; flex-basis: 36px; }
+  .hero-section { padding-top: 88px; }
+  .hero-copy { padding-top: 24px; }
+  .hero-title { font-size: clamp(50px, 15.3vw, 68px); line-height: 1.01; }
+  .hero-lede { margin: 24px 0 0; font-size: 15px; line-height: 1.7; }
+  .button { min-height: 49px; padding-inline: 21px; }
+
+
+  .section-pad { padding: 52px 0; }
+  .section-title { font-size: clamp(39px, 12vw, 52px); }
+
+  .process-quote { align-items: flex-start; margin-top: 36px; padding-inline: 4px; }
+  .process-quote p { text-align: left; }
+  .modalities-note { margin-top: 24px; text-align: left; }
+  .booking-closing { margin-top: 42px; padding-top: 24px; text-align: left; }
+  .about-grid { gap: 30px; }
+  .philosophy-card { padding: 18px; }
+  .modalities-section { padding: 52px 0 56px; }
+  .modality-card { min-height: 0; }
+  .process-heading { margin-bottom: 36px; text-align: left; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .contact-form { padding: 22px 18px; }
+  .form-heading { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .faq-section { padding: 52px 0; }
+  .faq-list summary { min-height: 68px; font-size: 19px; }
+  .faq-list details > p { margin-right: 0; }
+  .booking-section { padding: 52px 0; }
+  .site-footer { padding-top: 38px; }
+  .footer-main { grid-template-columns: 1fr; gap: 32px; }
+  .footer-main nav { max-width: 260px; }
+  .crisis-note { margin-top: 4px; }
+  .footer-bottom { grid-template-columns: 1fr auto; }
+  .footer-bottom > div { display: none; }
+  .legal-main { padding-top: 76px; }
+  .legal-hero { padding: 48px 0 38px; }
+  .legal-hero h1 { font-size: clamp(45px, 14vw, 62px); }
+  .legal-summary { font-size: 16px; }
+  .legal-content section + section { margin-top: 36px; padding-top: 36px; }
+}
+
+@media (max-width: 780px) {
+  .therapist-heading {
+    grid-template-columns: 1fr;
+    gap: 21px;
+    margin-bottom: 30px;
+  }
+
+
+  .therapist-heading > p:last-child {
+    max-width: 560px;
+  }
+
+  .therapist-grid {
+    grid-template-columns: 1fr;
+    gap: 46px;
+  }
+
+  .therapist-card {
+    width: min(100%, 470px);
+  }
+
+  .therapist-portrait {
+    height: 420px;
+  }
+
+  .therapist-copy {
+    max-width: 620px;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .therapist-heading {
+    margin-bottom: 24px;
+  }
+
+  .therapist-grid {
+    gap: 38px;
+  }
+
+  .therapist-portrait {
+    height: 350px;
+  }
+
+  .therapist-card-caption {
+    padding-inline: 18px;
+  }
+
+  .therapist-card-caption h3 {
+    font-size: 18px;
+  }
+
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  [data-reveal] { opacity: 1; transform: none; }
+  .brand-name-layer { filter: none; transform: none; }
+}

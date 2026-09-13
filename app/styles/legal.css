@@ -1,0 +1,120 @@
+.legal-main {
+  min-height: 70vh;
+  padding-top: 76px;
+  background:
+    radial-gradient(circle at 88% 4%, rgba(216, 226, 211, 0.68), transparent 25%),
+    var(--cream);
+}
+
+.legal-shell {
+  max-width: 850px;
+}
+
+.legal-hero {
+  border-bottom: 1px solid var(--line);
+  padding: 76px 0 52px;
+}
+
+.legal-back-link {
+  margin-bottom: 34px;
+}
+
+.legal-hero .eyebrow {
+  margin-bottom: 20px;
+}
+
+.legal-hero h1 {
+  max-width: 780px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(50px, 7vw, 78px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.legal-summary {
+  max-width: 720px;
+  margin: 26px 0 0;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.legal-updated {
+  margin: 18px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.legal-content {
+  padding-top: 56px;
+  padding-bottom: 78px;
+}
+
+.legal-content section + section {
+  margin-top: 44px;
+  padding-top: 44px;
+  border-top: 1px solid var(--line);
+}
+
+.legal-content h2 {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(27px, 4vw, 38px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.legal-content p,
+.legal-content li {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.legal-content p {
+  margin: 0;
+}
+
+.legal-content p + p,
+.legal-content p + ul,
+.legal-content ul + p {
+  margin-top: 16px;
+}
+
+.legal-content ul {
+  margin-bottom: 0;
+  padding-left: 23px;
+}
+
+.legal-content li + li {
+  margin-top: 7px;
+}
+
+.not-found-main {
+  display: grid;
+  min-height: 68vh;
+  align-items: center;
+  padding: 142px 0 72px;
+  background: radial-gradient(circle at 78% 25%, rgba(216, 226, 211, 0.75), transparent 30%);
+}
+
+.not-found-main h1 {
+  max-width: 760px;
+  margin: 18px 0;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 82px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.not-found-main > .page-shell > p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 0 0 30px;
+  color: var(--ink-soft);
+  font-size: 17px;
+}
+

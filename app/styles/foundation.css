@@ -1,0 +1,299 @@
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin-italic-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/manrope-latin-variable.woff2") format("woff2");
+}
+
+:root {
+  --cream: #f7f3eb;
+  --paper: #fcfaf5;
+  --ink: #24332d;
+  --ink-soft: #4d5a54;
+  --sage: #819789;
+  --sage-deep: #4d6758;
+  --sage-pale: #dfe7dc;
+  --clay: #985a43;
+  --clay-pale: #eee0d7;
+  --ochre: #766231;
+  --ochre-pale: #eee7d5;
+  --marigold: #c8954f;
+  --rose: #b66f66;
+  --line: rgba(36, 51, 45, 0.15);
+  --white: #fffdfa;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Manrope", "Segoe UI", Arial, sans-serif;
+  --motion-gentle: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-sage: var(--sage);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--sage-pale);
+  color: var(--ink);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid #a55f47;
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 20px;
+  top: -80px;
+  z-index: 100;
+  border-radius: 999px;
+  background: var(--ink);
+  color: white;
+  padding: 10px 18px;
+  transition: top 180ms ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.site-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  border-bottom: 1px solid rgba(36, 51, 45, 0.1);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: max-content;
+}
+
+.brand > span:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.brand strong {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.brand-name-rotator,
+.brand-name-layers {
+  display: inline-grid;
+}
+
+.brand-name-rotator {
+  position: relative;
+  align-items: center;
+}
+
+.brand-name-layers,
+.brand-name-layer {
+  grid-area: 1 / 1;
+}
+
+.brand-name-layer {
+  white-space: nowrap;
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(0.22em);
+  transition:
+    opacity 620ms ease,
+    filter 620ms ease,
+    transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brand-name-layer.is-active {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+.brand-name-layer:not([lang="en"]) {
+  font-family:
+    "Nirmala UI",
+    "Noto Serif Devanagari",
+    "Noto Serif Gujarati",
+    "Noto Serif Telugu",
+    "Noto Serif Tamil",
+    serif;
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.brand-name-layer[lang="te"] {
+  font-family: "Noto Serif Telugu", "Nirmala UI", serif;
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+.brand-name-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.brand small {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.brand-mark {
+  display: block;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  object-fit: contain;
+}
+
+.nav-link {
+  position: relative;
+  color: #435149;
+  font-size: 14px;
+}
+
+.nav-link::after {
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 100%;
+  bottom: -7px;
+  height: 1px;
+  background: var(--clay);
+  transition: right 220ms ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  right: 0;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fffdf9;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.button:hover {
+  background: var(--sage-deep);
+  box-shadow: 0 10px 26px rgba(36, 51, 45, 0.14);
+  transform: translateY(-2px);
+}
+
+.directional-link > span[aria-hidden="true"] {
+  display: inline-block;
+  transition: transform 180ms ease;
+}
+
+.directional-link[data-direction="right"]:is(:hover, :focus-visible) > span[aria-hidden="true"] {
+  transform: translateX(4px);
+}
+
+.directional-link[data-direction="left"]:is(:hover, :focus-visible) > span[aria-hidden="true"] {
+  transform: translateX(-4px);
+}
+
+.directional-link[data-direction="down"]:is(:hover, :focus-visible) > span[aria-hidden="true"] {
+  transform: translateY(4px);
+}
+
+.directional-link[data-direction="up"]:is(:hover, :focus-visible) > span[aria-hidden="true"] {
+  transform: translateY(-4px);
+}
+
+.button-small {
+  min-height: 42px;
+  gap: 12px;
+  padding-inline: 19px;
+  font-size: 12px;
+}
+

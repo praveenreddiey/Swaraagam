@@ -1,0 +1,119 @@
+.site-footer {
+  background: #f6f1e8;
+  padding: 44px 0 22px;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: start;
+  gap: 60px;
+  padding-bottom: 30px;
+}
+
+.footer-main > p {
+  max-width: 300px;
+  margin: 7px 0 0;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.footer-main nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 38px;
+}
+
+.footer-main nav a,
+.footer-bottom a,
+.footer-bottom .copy-email-button {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.footer-main nav a:hover,
+.footer-bottom a:hover,
+.footer-bottom .copy-email-button:hover { color: var(--clay); }
+
+.crisis-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 21px 0;
+}
+
+.crisis-note > span {
+  display: grid;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid var(--clay);
+  border-radius: 50%;
+  color: var(--clay);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.crisis-note p { margin: 1px 0 0; color: var(--ink-soft); font-size: 11px; line-height: 1.7; }
+.crisis-note strong { color: var(--ink); }
+.crisis-note a,
+.consent-field a,
+.legal-content a,
+.legal-content .copy-email-button,
+.copy-email-button {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.crisis-note a:hover,
+.consent-field a:hover,
+.legal-content a:hover,
+.legal-content .copy-email-button:hover {
+  color: var(--clay);
+}
+
+.copy-email {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+}
+
+.copy-email-button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.copy-email-status {
+  color: var(--sage-deep);
+  font-size: 0.78em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.footer-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 30px;
+  padding-top: 18px;
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.footer-bottom > div { display: flex; justify-content: center; gap: 24px; }
+.back-to-top { font-weight: 700; }
+
+[data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+

@@ -1,0 +1,275 @@
+.site-canvas {
+  position: relative;
+  isolation: isolate;
+}
+
+.site-canvas::after {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  background-image: url("/paper-grain.svg");
+  content: "";
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.hero-kicker {
+  margin: 0 0 16px;
+  color: var(--clay);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero-artwork {
+  position: absolute;
+  z-index: 1;
+  inset: 76px 0 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-artwork svg {
+  width: 100%;
+  height: 100%;
+}
+
+.rhythm-wash {
+  opacity: 0.34;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.rhythm-wash-sage {
+  fill: var(--sage-pale);
+  animation: wash-breathe 12s var(--motion-gentle) infinite alternate;
+}
+
+.rhythm-wash-clay {
+  fill: var(--clay-pale);
+  animation: wash-breathe 14s var(--motion-gentle) 1.5s infinite alternate-reverse;
+}
+
+.rhythm-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rhythm-line-primary {
+  stroke: var(--sage-deep);
+  stroke-dasharray: 11 20;
+  stroke-width: 2;
+  opacity: 0.24;
+  animation: rhythm-travel 32s linear infinite;
+}
+
+.rhythm-line-secondary {
+  stroke: var(--clay);
+  stroke-dasharray: 3 16;
+  stroke-width: 1.5;
+  opacity: 0.24;
+  animation: rhythm-travel 24s linear infinite reverse;
+}
+
+.rhythm-bloom {
+  fill: none;
+  stroke: var(--rose);
+  stroke-width: 1.4;
+  opacity: 0.23;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.rhythm-bloom-one {
+  animation: bloom-float 9s var(--motion-gentle) infinite alternate;
+}
+
+.rhythm-bloom-two {
+  stroke: var(--marigold);
+  animation: bloom-float 11s var(--motion-gentle) 1s infinite alternate-reverse;
+}
+
+.rhythm-note {
+  fill: var(--sage-deep);
+  opacity: 0.11;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.rhythm-note-one {
+  animation: note-float 8s ease-in-out infinite;
+}
+
+.rhythm-note-two {
+  fill: var(--clay);
+  animation: note-float 10s ease-in-out 1.2s infinite reverse;
+}
+
+.rhythm-dot {
+  fill: var(--clay);
+  opacity: 0.42;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dot-pulse 5s ease-in-out infinite;
+}
+
+.rhythm-dot-two {
+  fill: var(--sage-deep);
+  animation-delay: 1.2s;
+}
+
+.rhythm-dot-three {
+  fill: var(--marigold);
+  animation-delay: 2.4s;
+}
+
+.rhythm-ribbon {
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 253, 250, 0.12);
+  border-bottom: 1px solid rgba(255, 253, 250, 0.12);
+  background: var(--ink);
+  color: var(--white);
+  padding: 14px 0 13px;
+}
+
+.rhythm-ribbon-track,
+.rhythm-ribbon-group {
+  display: flex;
+  width: max-content;
+  align-items: center;
+}
+
+.rhythm-ribbon-track {
+  animation: ribbon-travel 36s linear infinite;
+}
+
+.rhythm-ribbon-group {
+  gap: clamp(34px, 5vw, 74px);
+  padding-right: clamp(34px, 5vw, 74px);
+}
+
+.rhythm-ribbon span {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(34px, 5vw, 74px);
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.8vw, 22px);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.rhythm-ribbon span::after {
+  color: var(--marigold);
+  content: "✦";
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-style: normal;
+}
+
+[data-reveal] {
+  transition:
+    opacity 700ms var(--motion-gentle),
+    transform 800ms var(--motion-gentle);
+}
+
+.reveal-enabled [data-reveal]:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.modalities-grid [data-reveal]:nth-child(2),
+.process-list [data-reveal]:nth-child(2) {
+  transition-delay: 90ms;
+}
+
+.modalities-grid [data-reveal]:nth-child(3),
+.process-list [data-reveal]:nth-child(3) {
+  transition-delay: 180ms;
+}
+
+.modality-icon {
+  transition:
+    transform 500ms var(--motion-gentle),
+    box-shadow 500ms ease;
+}
+
+.modality-card:is(:hover, :focus-within) .modality-icon {
+  box-shadow: 0 10px 28px rgba(36, 51, 45, 0.12);
+  transform: translateY(-5px) rotate(4deg);
+}
+
+.therapist-portrait::after {
+  animation: portrait-orbit 16s linear infinite;
+}
+
+@keyframes wash-breathe {
+  to { transform: scale(1.08) rotate(2deg); }
+}
+
+@keyframes rhythm-travel {
+  to { stroke-dashoffset: -310; }
+}
+
+@keyframes bloom-float {
+  to { transform: translate(8px, -11px) rotate(5deg); }
+}
+
+@keyframes note-float {
+  50% { transform: translateY(-12px) rotate(3deg); }
+}
+
+@keyframes dot-pulse {
+  50% { opacity: 0.2; transform: scale(1.55); }
+}
+
+@keyframes ribbon-travel {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes portrait-orbit {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 780px) {
+  .hero-artwork {
+    top: 70px;
+    opacity: 0.72;
+  }
+
+  .rhythm-bloom-two,
+  .rhythm-note-two,
+  .rhythm-line-secondary {
+    display: none;
+  }
+
+  .rhythm-ribbon {
+    padding-block: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhythm-wash,
+  .rhythm-line,
+  .rhythm-bloom,
+  .rhythm-note,
+  .rhythm-dot,
+  .rhythm-ribbon-track,
+  .therapist-portrait::after {
+    animation: none;
+  }
+
+  .rhythm-ribbon-track {
+    transform: translateX(-10%);
+  }
+
+  .reveal-enabled [data-reveal]:not(.is-visible) {
+    opacity: 1;
+    transform: none;
+  }
+}
