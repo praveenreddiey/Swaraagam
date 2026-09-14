@@ -48,6 +48,7 @@ export async function saveEnquiry(enquiry: StoredEnquiry) {
       alternateTime: enquiries.alternateTime,
       note: enquiries.note,
       notificationStatus: enquiries.notificationStatus,
+      visitorConfirmationStatus: enquiries.visitorConfirmationStatus,
     })
     .from(enquiries)
     .where(eq(enquiries.id, enquiry.id))
@@ -105,6 +106,62 @@ export async function markNotificationFailed(id: string, reason: string) {
     .set({
       notificationStatus: "failed",
       lastNotificationError: reason.slice(0, 80),
+      updatedAt: Date.now(),
+    })
+    .where(eq(enquiries.id, id));
+}
+
+/** Reserve an acknowledgement attempt unless the visitor has already been notified. */
+export async function beginVisitorConfirmationAttempt(id: string) {
+  const db = getDb();
+  const now = Date.now();
+
+  const result = await db
+    .update(enquiries)
+    .set({
+      visitorConfirmationStatus: "pending",
+      visitorConfirmationAttempts: sql`${enquiries.visitorConfirmationAttempts} + 1`,
+      lastVisitorConfirmationAttemptAt: now,
+      updatedAt: now,
+      lastVisitorConfirmationError: null,
+    })
+    .where(
+      and(
+        eq(enquiries.id, id),
+        ne(enquiries.visitorConfirmationStatus, "accepted"),
+      ),
+    )
+    .returning({ id: enquiries.id })
+    .get();
+
+  return Boolean(result);
+}
+
+/** Record the provider's acceptance of a visitor acknowledgement email. */
+export async function markVisitorConfirmationAccepted(
+  id: string,
+  providerMessageId: string | null,
+) {
+  const now = Date.now();
+  await getDb()
+    .update(enquiries)
+    .set({
+      visitorConfirmationStatus: "accepted",
+      visitorConfirmationAcceptedAt: now,
+      visitorConfirmationMessageId: providerMessageId,
+      lastVisitorConfirmationError: null,
+      updatedAt: now,
+    })
+    .where(eq(enquiries.id, id));
+}
+
+/** Record a bounded acknowledgement failure while retaining the original enquiry. */
+export async function markVisitorConfirmationFailed(id: string, reason: string) {
+  await getDb()
+    .update(enquiries)
+    .set({
+      visitorConfirmationStatus: "failed",
+      lastVisitorConfirmationError: reason.slice(0, 80),
       updatedAt: Date.now(),
     })
     .where(eq(enquiries.id, id));

@@ -1,8 +1,11 @@
 import {
   beginNotificationAttempt,
+  beginVisitorConfirmationAttempt,
   consumeRateLimit,
   markNotificationAccepted,
   markNotificationFailed,
+  markVisitorConfirmationAccepted,
+  markVisitorConfirmationFailed,
   saveEnquiry,
 } from "@/db/enquiries";
 
@@ -41,6 +44,12 @@ type Enquiry = {
   alternateTime: string;
   note: string;
   turnstileToken: string;
+};
+
+type EmailConfiguration = {
+  apiKey: string;
+  from: string;
+  practiceRecipients: string[];
 };
 
 function runtimeValue(key: string) {
@@ -271,18 +280,25 @@ async function verifyTurnstile(token: string, request: Request, requestId: strin
   );
 }
 
-async function sendEnquiryEmail(enquiry: Enquiry, requestId: string) {
+function emailConfiguration(): EmailConfiguration {
   const apiKey = runtimeValue("RESEND_API_KEY");
   const from = runtimeValue("ENQUIRY_FROM_EMAIL");
-  const recipients = (runtimeValue("ENQUIRY_TO_EMAIL") ?? "")
+  const practiceRecipients = (runtimeValue("ENQUIRY_TO_EMAIL") ?? "")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean)
     .slice(0, 5);
 
-  if (!apiKey || !from || recipients.length === 0) {
+  if (!apiKey || !from || practiceRecipients.length === 0) {
     throw new Error("EMAIL_NOT_CONFIGURED");
   }
+
+  return { apiKey, from, practiceRecipients };
+}
+
+/** Send the full appointment-request notification only to the practice inbox. */
+async function sendEnquiryEmail(enquiry: Enquiry, requestId: string) {
+  const { apiKey, from, practiceRecipients } = emailConfiguration();
 
   const safeName = escapeHtml(enquiry.name);
   const safeEmail = escapeHtml(enquiry.email);
@@ -308,7 +324,7 @@ async function sendEnquiryEmail(enquiry: Enquiry, requestId: string) {
     },
     body: JSON.stringify({
       from,
-      to: recipients,
+      to: practiceRecipients,
       reply_to: enquiry.email,
       subject: `New Swaraagam appointment request — ${enquiry.service}`,
       text: [
@@ -357,14 +373,67 @@ async function sendEnquiryEmail(enquiry: Enquiry, requestId: string) {
   return typeof result?.id === "string" ? result.id : null;
 }
 
-async function sendEnquiryEmailWithRetry(
-  enquiry: Enquiry,
-  idempotencyKey: string,
-) {
+/** Send a minimal receipt without echoing the visitor's sensitive enquiry details. */
+async function sendVisitorConfirmationEmail(enquiry: Enquiry, requestId: string) {
+  const { apiKey, from, practiceRecipients } = emailConfiguration();
+  const safeName = escapeHtml(enquiry.name);
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": requestId,
+    },
+    body: JSON.stringify({
+      from,
+      to: [enquiry.email],
+      reply_to: practiceRecipients[0],
+      subject: "We received your Swaraagam appointment request",
+      text: [
+        `Hello ${enquiry.name},`,
+        "",
+        "We received your appointment request.",
+        "This email confirms receipt only; it does not confirm an appointment.",
+        "We will reply within two working days to discuss availability and next steps.",
+        "",
+        "Swaraagam is not a crisis service. For urgent support, contact your local emergency services or helpline.",
+        "",
+        `Request ID: ${requestId}`,
+      ].join("\n"),
+      html: `
+        <p>Hello ${safeName},</p>
+        <p>We received your appointment request.</p>
+        <p><strong>This email confirms receipt only; it does not confirm an appointment.</strong></p>
+        <p>We will reply within two working days to discuss availability and next steps.</p>
+        <p>Swaraagam is not a crisis service. For urgent support, contact your local emergency services or helpline.</p>
+        <hr>
+        <p><small>Request ID: ${requestId}</small></p>
+      `,
+    }),
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  if (!response.ok) {
+    console.error("Visitor confirmation email provider rejected the request", {
+      requestId,
+      status: response.status,
+    });
+    throw new Error("VISITOR_CONFIRMATION_PROVIDER_ERROR");
+  }
+
+  const result = (await response.json().catch(() => null)) as {
+    id?: unknown;
+  } | null;
+  return typeof result?.id === "string" ? result.id : null;
+}
+
+/** Retry one email request once for a transient provider or network failure. */
+async function sendEmailWithRetry(send: () => Promise<string | null>) {
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
-      return await sendEnquiryEmail(enquiry, idempotencyKey);
+      return await send();
     } catch (error) {
       lastError = error;
       if (attempt === 0) {
@@ -375,7 +444,7 @@ async function sendEnquiryEmailWithRetry(
   throw lastError;
 }
 
-/** Validate, store and notify the practice about one public enquiry request. */
+/** Validate, store and notify the practice and visitor about one public enquiry request. */
 export async function POST(request: Request) {
   const requestId = crypto.randomUUID();
 
@@ -434,10 +503,11 @@ export async function POST(request: Request) {
   if (!parsed.enquiry) {
     return json({ error: parsed.error ?? "Please check the form and try again.", requestId }, 422);
   }
+  const enquiry = parsed.enquiry;
 
   try {
     const isHuman = await verifyTurnstile(
-      parsed.enquiry.turnstileToken,
+      enquiry.turnstileToken,
       request,
       requestId,
     );
@@ -446,29 +516,29 @@ export async function POST(request: Request) {
     }
 
     const saved = await saveEnquiry({
-      id: parsed.enquiry.submissionId,
-      name: parsed.enquiry.name,
-      email: parsed.enquiry.email,
-      service: parsed.enquiry.service,
-      sessionMode: parsed.enquiry.sessionMode,
-      preferredDate: parsed.enquiry.preferredDate,
-      preferredTime: parsed.enquiry.preferredTime,
-      alternateDate: parsed.enquiry.alternateDate,
-      alternateTime: parsed.enquiry.alternateTime,
-      note: parsed.enquiry.note,
+      id: enquiry.submissionId,
+      name: enquiry.name,
+      email: enquiry.email,
+      service: enquiry.service,
+      sessionMode: enquiry.sessionMode,
+      preferredDate: enquiry.preferredDate,
+      preferredTime: enquiry.preferredTime,
+      alternateDate: enquiry.alternateDate,
+      alternateTime: enquiry.alternateTime,
+      note: enquiry.note,
     });
 
     if (!saved) throw new Error("ENQUIRY_NOT_SAVED");
     const matchesExistingSubmission =
-      saved.name === parsed.enquiry.name &&
-      saved.email === parsed.enquiry.email &&
-      saved.service === parsed.enquiry.service &&
-      saved.sessionMode === parsed.enquiry.sessionMode &&
-      saved.preferredDate === parsed.enquiry.preferredDate &&
-      saved.preferredTime === parsed.enquiry.preferredTime &&
-      saved.alternateDate === parsed.enquiry.alternateDate &&
-      saved.alternateTime === parsed.enquiry.alternateTime &&
-      saved.note === parsed.enquiry.note;
+      saved.name === enquiry.name &&
+      saved.email === enquiry.email &&
+      saved.service === enquiry.service &&
+      saved.sessionMode === enquiry.sessionMode &&
+      saved.preferredDate === enquiry.preferredDate &&
+      saved.preferredTime === enquiry.preferredTime &&
+      saved.alternateDate === enquiry.alternateDate &&
+      saved.alternateTime === enquiry.alternateTime &&
+      saved.note === enquiry.note;
     if (!matchesExistingSubmission) {
       return json(
         { error: "Please refresh the page and submit the form again.", requestId },
@@ -476,37 +546,66 @@ export async function POST(request: Request) {
       );
     }
 
-    if (saved.notificationStatus === "accepted") {
-      return json({ ok: true, safelyStored: true, requestId }, 202);
+    let notificationPending = false;
+
+    if (saved.notificationStatus !== "accepted") {
+      const shouldNotify = await beginNotificationAttempt(saved.id);
+      if (shouldNotify) {
+        try {
+          const providerMessageId = await sendEmailWithRetry(() =>
+            sendEnquiryEmail(enquiry, enquiry.submissionId),
+          );
+          await markNotificationAccepted(saved.id, providerMessageId);
+        } catch (notificationError) {
+          const reason =
+            notificationError instanceof Error
+              ? notificationError.message
+              : "NOTIFICATION_FAILED";
+          await markNotificationFailed(saved.id, reason).catch(() => undefined);
+          console.error("Enquiry saved but practice notification is pending", {
+            requestId,
+            reason,
+          });
+          notificationPending = true;
+        }
+      }
     }
 
-    const shouldNotify = await beginNotificationAttempt(saved.id);
-    if (!shouldNotify) {
-      return json({ ok: true, safelyStored: true, requestId }, 202);
+    if (saved.visitorConfirmationStatus !== "accepted") {
+      const shouldConfirm = await beginVisitorConfirmationAttempt(saved.id);
+      if (shouldConfirm) {
+        try {
+          const providerMessageId = await sendEmailWithRetry(() =>
+            sendVisitorConfirmationEmail(
+              enquiry,
+              `${enquiry.submissionId}:visitor-confirmation`,
+            ),
+          );
+          await markVisitorConfirmationAccepted(saved.id, providerMessageId);
+        } catch (confirmationError) {
+          const reason =
+            confirmationError instanceof Error
+              ? confirmationError.message
+              : "VISITOR_CONFIRMATION_FAILED";
+          await markVisitorConfirmationFailed(saved.id, reason).catch(() => undefined);
+          console.error("Enquiry saved but visitor confirmation is pending", {
+            requestId,
+            reason,
+          });
+          notificationPending = true;
+        }
+      }
     }
 
-    try {
-      const providerMessageId = await sendEnquiryEmailWithRetry(
-        parsed.enquiry,
-        parsed.enquiry.submissionId,
-      );
-      await markNotificationAccepted(saved.id, providerMessageId);
-      return json({ ok: true, safelyStored: true, requestId }, 202);
-    } catch (notificationError) {
-      const reason =
-        notificationError instanceof Error
-          ? notificationError.message
-          : "NOTIFICATION_FAILED";
-      await markNotificationFailed(saved.id, reason).catch(() => undefined);
-      console.error("Enquiry saved but notification is pending", {
+    return json(
+      {
+        ok: true,
+        safelyStored: true,
+        ...(notificationPending ? { notificationPending: true } : {}),
         requestId,
-        reason,
-      });
-      return json(
-        { ok: true, safelyStored: true, notificationPending: true, requestId },
-        202,
-      );
-    }
+      },
+      202,
+    );
   } catch (error) {
     const reason = error instanceof Error ? error.message : "UNKNOWN";
     console.error("Enquiry processing failed", { requestId, reason });

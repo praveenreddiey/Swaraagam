@@ -321,6 +321,7 @@ test("silently accepts honeypot submissions without storing an enquiry", async (
 
 test("stores a valid enquiry before accepting the email notification", async () => {
   const enquiry = validEnquiry();
+  const requestsBefore = resendRequests.length;
   const response = await postEnquiry(enquiry, "192.0.2.19");
   assert.equal(response.status, 202);
   const body = await response.json();
@@ -328,7 +329,7 @@ test("stores a valid enquiry before accepting the email notification", async () 
   assert.equal(body.safelyStored, true);
 
   const saved = await database
-    .prepare("SELECT email, session_mode, client_group, preferred_date, preferred_time, notification_status, provider_message_id FROM enquiries WHERE id = ?")
+    .prepare("SELECT email, session_mode, client_group, preferred_date, preferred_time, notification_status, provider_message_id, visitor_confirmation_status, visitor_confirmation_message_id FROM enquiries WHERE id = ?")
     .bind(enquiry.submissionId)
     .first();
   assert.equal(saved.email, enquiry.email);
@@ -338,13 +339,32 @@ test("stores a valid enquiry before accepting the email notification", async () 
   assert.equal(saved.preferred_time, enquiry.preferredTime);
   assert.equal(saved.notification_status, "accepted");
   assert.match(saved.provider_message_id, /^email_/);
+  assert.equal(saved.visitor_confirmation_status, "accepted");
+  assert.match(saved.visitor_confirmation_message_id, /^email_/);
 
-  const notification = resendRequests.at(-1);
+  const requests = resendRequests.slice(requestsBefore);
+  assert.equal(requests.length, 2);
+  const notification = requests.find((request) =>
+    request.body.to.includes("practice@example.com"),
+  );
+  const confirmation = requests.find((request) =>
+    request.body.to.includes(enquiry.email),
+  );
+
+  assert.ok(notification);
   assert.equal(notification.body.reply_to, enquiry.email);
   assert.match(notification.body.text, /Preferred date:/);
   assert.doesNotMatch(notification.body.text, /Session for:/);
   assert.match(notification.body.text, /saved in the protected website database/i);
   assert.doesNotMatch(notification.body.text, /not stored/i);
+
+  assert.ok(confirmation);
+  assert.equal(confirmation.body.reply_to, "practice@example.com");
+  assert.match(confirmation.idempotencyKey, /:visitor-confirmation$/);
+  assert.match(confirmation.body.subject, /received your swaraagam appointment request/i);
+  assert.match(confirmation.body.text, /confirms receipt only/i);
+  assert.match(confirmation.body.text, /two working days/i);
+  assert.doesNotMatch(confirmation.body.text, /Preferred date:|Brief note:|non-clinical test/i);
 });
 
 test("retains an enquiry when the email provider is unavailable", async () => {
@@ -357,11 +377,13 @@ test("retains an enquiry when the email provider is unavailable", async () => {
   assert.equal(body.notificationPending, true);
 
   const saved = await database
-    .prepare("SELECT notification_status, notification_attempts FROM enquiries WHERE id = ?")
+    .prepare("SELECT notification_status, notification_attempts, visitor_confirmation_status, visitor_confirmation_attempts FROM enquiries WHERE id = ?")
     .bind(enquiry.submissionId)
     .first();
   assert.equal(saved.notification_status, "failed");
   assert.equal(saved.notification_attempts, 1);
+  assert.equal(saved.visitor_confirmation_status, "accepted");
+  assert.equal(saved.visitor_confirmation_attempts, 1);
 });
 
 test("deduplicates retries and does not resend an accepted email", async () => {
@@ -371,7 +393,7 @@ test("deduplicates retries and does not resend an accepted email", async () => {
   const second = await postEnquiry(enquiry, "192.0.2.22");
   assert.equal(first.status, 202);
   assert.equal(second.status, 202);
-  assert.equal(resendRequests.length, before + 1);
+  assert.equal(resendRequests.length, before + 2);
 
   const result = await database
     .prepare("SELECT COUNT(*) AS count FROM enquiries WHERE id = ?")

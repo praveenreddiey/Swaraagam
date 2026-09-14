@@ -13,15 +13,16 @@ this order:
 1. The API checks the browser origin, body size, content type and database-backed rate limit.
 2. It validates and normalises all fields and verifies Cloudflare Turnstile server-side.
 3. It saves the appointment request in Cloudflare D1 with status `pending`.
-4. It asks Resend to notify the configured practice inbox.
-5. It records the notification as `accepted` or `failed` without deleting the request.
+4. It asks Resend to notify the configured practice inbox and send the visitor a
+   minimal receipt that does not confirm an appointment.
+5. It records each delivery as `accepted` or `failed` without deleting the request.
 
 If the database is unavailable, the API does not claim success. The visitor's
 form remains filled so they can retry. If D1 succeeds but Resend fails, the API
 still confirms safe receipt because the appointment request remains in D1 for recovery.
 
 Each browser submission has a UUID. Retrying the same submission cannot create
-a second database record or resend an email already accepted by Resend. Names,
+a second database record or resend either email after Resend has accepted it. Names,
 addresses and notes are excluded from application logs.
 
 ## Information stored
@@ -64,9 +65,10 @@ Useful restricted query:
 ```sql
 SELECT id, created_at, name, email, service, session_mode, client_group,
        preferred_date, preferred_time, alternate_date, alternate_time, note, notification_status,
-       notification_attempts, last_notification_attempt_at
+       notification_attempts, last_notification_attempt_at, visitor_confirmation_status,
+       visitor_confirmation_attempts, last_visitor_confirmation_attempt_at
 FROM enquiries
-WHERE notification_status != 'accepted'
+WHERE notification_status != 'accepted' OR visitor_confirmation_status != 'accepted'
 ORDER BY created_at ASC;
 ```
 
@@ -134,7 +136,8 @@ After deployment, submit one clearly labelled non-clinical test appointment requ
 confirm both:
 
 - the D1 record exists; and
-- the email notification arrives in the practice mailbox.
+- the practice notification arrives in the practice mailbox; and
+- the visitor receipt arrives at the harmless test address and does not confirm an appointment.
 
 Never use a real client's information for a smoke test.
 

@@ -1,6 +1,6 @@
 # Swaraagam — deploy it yourself
 
-This folder is a self-contained copy of the Swaraagam source. The current app is a React/TypeScript Vinext app that runs as a Cloudflare Worker, serves static assets, stores appointment requests in Cloudflare D1, verifies Turnstile, and sends notifications through Resend. Its current booking path is the native enquiry form; a Calendly link is optional and does not require backend code if you add one later.
+This folder is a self-contained copy of the Swaraagam source. The current app is a React/TypeScript Vinext app that runs as a Cloudflare Worker, serves static assets, stores appointment requests in Cloudflare D1, verifies Turnstile, and sends a private practice notification plus a minimal visitor receipt through Resend. Its current booking path is the native enquiry form; a Calendly link is optional and does not require backend code if you add one later.
 
 The copy deliberately excludes generated output (`dist`, `.wrangler`, `.vinext`, `node_modules`) and secrets. Those are recreated locally or configured in your own Cloudflare account.
 
@@ -153,10 +153,10 @@ are serialized so one release cannot overtake another.
 
 1. Open the deployed URL and submit a harmless test request.
 2. Confirm Turnstile accepts it and the message arrives at `ENQUIRY_TO_EMAIL`.
-3. Check notification state without selecting private notes:
+3. Check practice-notification and visitor-receipt state without selecting private notes:
 
 ```powershell
-npx wrangler d1 execute swaraagam-enquiries --remote --command "SELECT notification_status, COUNT(*) AS total FROM enquiries GROUP BY notification_status"
+npx wrangler d1 execute swaraagam-enquiries --remote --command "SELECT notification_status, visitor_confirmation_status, COUNT(*) AS total FROM enquiries GROUP BY notification_status, visitor_confirmation_status"
 ```
 
 4. Watch Worker errors while testing:
