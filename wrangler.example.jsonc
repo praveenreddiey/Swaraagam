@@ -5,23 +5,24 @@
   "compatibility_date": "2026-09-12",
   "compatibility_flags": [
     "nodejs_compat",
-    "nodejs_compat_populate_process_env"
+    "nodejs_compat_populate_process_env",
   ],
+  "keep_vars": true,
   "workers_dev": false,
   "preview_urls": false,
   "assets": {
     "directory": "./dist/client",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "images": {
-    "binding": "IMAGES"
+    "binding": "IMAGES",
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "swaraagam-enquiries",
       "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID",
-      "migrations_dir": "./drizzle"
-    }
-  ]
+      "migrations_dir": "./drizzle",
+    },
+  ],
 }
