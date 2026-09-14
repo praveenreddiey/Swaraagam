@@ -44,6 +44,31 @@ test("keeps pointer, click and keyboard card state synchronized", async ({ page 
   await expect(card).toHaveAttribute("aria-expanded", "false");
 });
 
+test("uses distinct palette roles for hero, booking and back-to-top actions", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const colors = await page.evaluate(() => {
+    const backgroundColor = (selector: string) => {
+      const element = document.querySelector<HTMLElement>(selector);
+      if (!element) throw new Error(`Missing element: ${selector}`);
+      return getComputedStyle(element).backgroundColor;
+    };
+
+    return {
+      hero: backgroundColor(".hero-primary-cta"),
+      booking: backgroundColor(".header-booking-link"),
+      backToTop: backgroundColor(".back-to-top"),
+    };
+  });
+
+  expect(colors.hero).toBe("rgb(23, 127, 120)");
+  expect(colors.booking).toBe("rgb(120, 87, 216)");
+  expect(colors.backToTop).toBe("rgb(23, 127, 120)");
+  expect(colors.hero).not.toBe(colors.booking);
+});
+
 test.describe("narrow mobile viewport", () => {
   test.use({ viewport: { width: 320, height: 800 } });
 
@@ -101,5 +126,23 @@ test.describe("narrow mobile viewport", () => {
 
       expect(positions.headingTop).toBeGreaterThanOrEqual(positions.headerBottom - 1);
     }
+  });
+
+  test("keeps the mobile brand lockup visually prominent", async ({ page }) => {
+    await page.goto("/");
+
+    const brandMetrics = await page.locator(".brand-centered").evaluate((brand) => {
+      const mark = brand.querySelector<HTMLElement>(".brand-mark");
+      const wordmark = brand.querySelector<HTMLElement>("strong");
+      if (!mark || !wordmark) throw new Error("The mobile brand lockup is incomplete");
+
+      return {
+        markWidth: mark.getBoundingClientRect().width,
+        wordmarkHeight: wordmark.getBoundingClientRect().height,
+      };
+    });
+
+    expect(brandMetrics.markWidth).toBeGreaterThanOrEqual(55);
+    expect(brandMetrics.wordmarkHeight).toBeGreaterThanOrEqual(25);
   });
 });

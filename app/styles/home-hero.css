@@ -159,14 +159,23 @@
 
 .hero-side-label { color: var(--violet); }
 
-.hero-primary-cta,
+.hero-primary-cta {
+  border-color: var(--sage-deep);
+  background: var(--sage-deep);
+}
+
 .mobile-booking-bar .button {
   border-color: var(--violet);
   background: var(--violet);
 }
 
 .hero-primary-cta:hover,
-.mobile-booking-bar .button:hover {
+.hero-primary-cta:focus-visible {
+  background: var(--ink);
+}
+
+.mobile-booking-bar .button:hover,
+.mobile-booking-bar .button:focus-visible {
   background: var(--clay);
 }
 

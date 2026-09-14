@@ -140,9 +140,13 @@
 @media (max-width: 560px) {
   .page-shell { width: calc(100% - 34px); }
   .site-header { position: absolute; }
-  .brand strong { font-size: 19px; }
-  .brand small { font-size: 7px; }
-  .brand-mark { width: 36px; height: 36px; flex-basis: 36px; }
+  .brand strong { font-size: clamp(27px, 8.5vw, 32px); }
+  .brand small { font-size: 8px; }
+  .brand-centered .brand-mark {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+  }
   .hero-section { padding-top: 88px; }
   .hero-copy { padding-top: 24px; }
   .hero-title { font-size: clamp(50px, 15.3vw, 68px); line-height: 1.01; }
