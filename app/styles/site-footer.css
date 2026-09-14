@@ -94,7 +94,7 @@
   height: 42px;
   place-items: center;
   border-radius: 50%;
-  background: var(--violet);
+  background: var(--sage-deep);
   color: white;
   font-size: 0;
   transition: background-color 180ms ease, transform 180ms ease;
@@ -116,7 +116,7 @@
 }
 
 .site-footer .back-to-top:is(:hover, :focus-visible) {
-  background: var(--clay);
+  background: var(--ink);
   transform: translateY(calc(-50% - 3px));
 }
 
