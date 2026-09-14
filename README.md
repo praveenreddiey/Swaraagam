@@ -15,7 +15,7 @@ steps for this standalone copy.
 - Cloudflare Workers
 - Cloudflare D1 with Drizzle migrations
 - Cloudflare Turnstile for server-verified spam protection
-- Resend for practice-inbox notifications
+- Resend for private practice notifications and visitor receipt emails
 - A native, database-backed appointment-request flow with no external redirect
 
 ## Local setup
@@ -50,9 +50,12 @@ npx playwright install chromium
 ## Appointment-request reliability
 
 `POST /api/enquiries` verifies the request and Turnstile token, then writes the
-appointment request to D1 before asking Resend to send a notification. Email
-failure cannot erase a valid request. Submission UUIDs make retries idempotent, and the rate
-limit is shared through D1 rather than process memory.
+appointment request to D1 before asking Resend to notify the practice and send
+the visitor a minimal receipt. The receipt does not repeat the visitor's
+enquiry details or confirm an appointment. Each delivery is tracked separately,
+so email failure cannot erase a valid request or duplicate an accepted send.
+Submission UUIDs make retries idempotent, and the rate limit is shared through
+D1 rather than process memory.
 
 The database schema is in `db/schema.ts`; generated migrations are in
 `drizzle/`. After a schema change, run:

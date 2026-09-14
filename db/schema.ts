@@ -29,6 +29,20 @@ export const enquiries = sqliteTable(
     notificationAcceptedAt: integer("notification_accepted_at"),
     providerMessageId: text("provider_message_id"),
     lastNotificationError: text("last_notification_error"),
+    visitorConfirmationStatus: text("visitor_confirmation_status", {
+      enum: ["pending", "accepted", "failed"],
+    })
+      .notNull()
+      .default("pending"),
+    visitorConfirmationAttempts: integer("visitor_confirmation_attempts")
+      .notNull()
+      .default(0),
+    lastVisitorConfirmationAttemptAt: integer(
+      "last_visitor_confirmation_attempt_at",
+    ),
+    visitorConfirmationAcceptedAt: integer("visitor_confirmation_accepted_at"),
+    visitorConfirmationMessageId: text("visitor_confirmation_message_id"),
+    lastVisitorConfirmationError: text("last_visitor_confirmation_error"),
   },
   (table) => [
     index("idx_enquiries_notification_status_created_at").on(
