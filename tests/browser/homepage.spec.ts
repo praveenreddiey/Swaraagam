@@ -100,15 +100,10 @@ test.describe("narrow mobile viewport", () => {
 
     const footer = page.getByRole("contentinfo");
     await footer.scrollIntoViewIfNeeded();
-    await expect(footer.getByRole("link", { name: "Privacy" })).toBeVisible();
     await expect(
-      footer.getByRole("link", { name: "Accessibility" }),
+      footer.getByText(/© \d{4} Swaraagam\. All rights reserved\./u),
     ).toBeVisible();
-    await expect(
-      footer.getByRole("button", {
-        name: /Copy enquiries@swaraagam\.com/u,
-      }),
-    ).toBeVisible();
+    await expect(footer.getByRole("link", { name: "Back to top" })).toBeVisible();
   });
 
   test("keeps legal page headings below the mobile header", async ({ page }) => {

@@ -204,7 +204,7 @@ test("renders the site, legal pages and production security headers", async () =
     /Music Therapy Intern/, /Your request is saved securely/, /Request a session/, /Add a brief note/,
     /Preferred date/, /Preferred time \(IST\)/, /A little clarity before you begin/, /What happens in the first session\?/,
     /mobile-booking-bar/, /Not a crisis service/, /Portrait space for Pragati Bhatt/, /property="og:image"/i,
-    /href="\/privacy"/, /href="\/accessibility"/, /href="\/service-information"/, /Copy enquiries@swaraagam\.com to clipboard/,
+    /href="\/service-information"/,
   ]) {
     assert.match(html, expectedHomeContent);
   }

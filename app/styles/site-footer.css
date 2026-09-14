@@ -9,15 +9,6 @@
   padding-bottom: 12px;
 }
 
-.footer-bottom a,
-.footer-bottom .copy-email-button {
-  color: var(--ink-soft);
-  font-size: 12px;
-}
-
-.footer-bottom a:hover,
-.footer-bottom .copy-email-button:hover { color: var(--clay); }
-
 .consent-field a,
 .legal-content a,
 .legal-content .copy-email-button,
@@ -68,15 +59,9 @@
   text-align: center;
 }
 
-.footer-bottom > div { display: flex; justify-content: center; gap: 24px; }
 .back-to-top { font-weight: 700; }
 
 .site-footer .footer-bottom { color: white; }
-
-.site-footer .footer-bottom a,
-.site-footer .footer-bottom .copy-email-button {
-  color: #f6c7dd;
-}
 
 .site-footer .footer-bottom > span { font-size: 12px; }
 
