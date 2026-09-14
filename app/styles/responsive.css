@@ -175,11 +175,6 @@
     min-height: 84px;
     padding-inline: 36px;
   }
-  .footer-bottom > div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 14px;
-  }
   .legal-hero { padding: 36px 0 42px; }
   .legal-hero h1 { font-size: clamp(45px, 14vw, 62px); }
   .legal-summary { font-size: 16px; }

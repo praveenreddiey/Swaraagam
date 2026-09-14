@@ -8,7 +8,7 @@ const RHYTHM_WORDS = [
 // Keep both animation halves wider than desktop viewports so the loop never exposes a blank tail.
 const RHYTHM_GROUP_COUNT = 12;
 
-/** Close the page with a full-width rhythm banner before the footer links. */
+/** Close the page with a full-width rhythm banner before the footer panel. */
 export function RhythmRibbon() {
   return (
     <aside

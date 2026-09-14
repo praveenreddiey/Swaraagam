@@ -1,21 +1,13 @@
-import Link from "next/link";
-import { CopyEmailAddress } from "@/components/CopyEmailAddress";
 import { RhythmRibbon } from "@/components/home/RhythmRibbon";
-import { CONTACT_EMAIL } from "@/lib/site";
 
-/** Render the shared ribbon, legal destinations, contact action and back-to-top control. */
+/** Render the shared ribbon, copyright notice and back-to-top control. */
 export function SiteFooter() {
   return (
     <footer className="site-footer">
       <RhythmRibbon />
       <div className="page-shell">
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Swaraagam</span>
-          <div>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/accessibility">Accessibility</Link>
-            <CopyEmailAddress email={CONTACT_EMAIL} />
-          </div>
+          <span>© {new Date().getFullYear()} Swaraagam. All rights reserved.</span>
           <a
             className="back-to-top directional-link"
             data-direction="up"

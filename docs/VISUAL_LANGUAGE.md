@@ -61,9 +61,8 @@ the two primary calls to action feel like part of one visual system.
 
 The footer is a compact two-tier close: a green rhythm ribbon followed by a
 short charcoal footer panel. The ribbon uses the body font with alternating regular
-and bold words for a light, wayfinding-style rhythm. Keep the copyright and
-legal links centered with the back-to-top action as an icon-only circular
-control at the panel's edge.
+and bold words for a light, wayfinding-style rhythm. Keep the copyright centered
+with the back-to-top action as an icon-only circular control at the panel's edge.
 
 ## Motion
 
@@ -73,7 +72,7 @@ Motion lives in `app/styles/visual-language.css`, with viewport observation in
 - Header branding remains a static English wordmark while hero artwork remains
   static so the first screen still feels clear.
 - The ribbon is continuous and slow inside the footer, immediately above the
-  footer links, so the page closes with a celebratory transition without
+  copyright panel, so the page closes with a celebratory transition without
   repeating the site information already provided in the header.
 - Section reveals use opacity and a short vertical translation only.
 - Process icons move gently. Modality cards begin with a compact heading-only
@@ -111,4 +110,4 @@ therapy space. Record the license or ownership source beside every new asset.
 Keep each source file below the repository's 400-line soft ceiling. The visual
 language test enforces this boundary and verifies font licensing and reduced
 motion support. Playwright tests cover navigation state, card interactions,
-narrow-screen overflow and mobile access to footer destinations.
+narrow-screen overflow and mobile access to the footer's back-to-top control.
