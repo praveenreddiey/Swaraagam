@@ -85,4 +85,21 @@ test.describe("narrow mobile viewport", () => {
       }),
     ).toBeVisible();
   });
+
+  test("keeps legal page headings below the mobile header", async ({ page }) => {
+    for (const path of ["/privacy", "/accessibility", "/service-information"]) {
+      await page.goto(path);
+
+      const positions = await page.locator(".legal-hero h1").evaluate((heading) => {
+        const header = document.querySelector<HTMLElement>(".site-header");
+        if (!header) throw new Error("The site header is missing");
+
+        const headingBounds = heading.getBoundingClientRect();
+        const headerBounds = header.getBoundingClientRect();
+        return { headingTop: headingBounds.top, headerBottom: headerBounds.bottom };
+      });
+
+      expect(positions.headingTop).toBeGreaterThanOrEqual(positions.headerBottom - 1);
+    }
+  });
 });
