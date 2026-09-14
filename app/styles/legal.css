@@ -204,6 +204,10 @@
 }
 
 @media (max-width: 560px) {
+  .legal-main {
+    padding-top: 140px;
+  }
+
   .legal-hero h1 {
     font-size: clamp(43px, 13vw, 60px);
   }
