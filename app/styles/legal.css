@@ -1,5 +1,6 @@
 .legal-main {
   min-height: 70vh;
+  width: 100%;
   padding-top: 0;
   background: var(--surface-modalities);
 }
@@ -11,6 +12,7 @@
 .legal-hero {
   position: relative;
   overflow: hidden;
+  width: 100%;
   background: var(--surface-hero);
   padding: 52px 0 58px;
 }

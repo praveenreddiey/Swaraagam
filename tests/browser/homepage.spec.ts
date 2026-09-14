@@ -1,5 +1,23 @@
 import { expect, test } from "@playwright/test";
 
+const publicRoutes = [
+  "/",
+  "/privacy",
+  "/accessibility",
+  "/service-information",
+  "/page-that-does-not-exist",
+] as const;
+
+const responsiveViewports = [
+  { width: 320, height: 800 },
+  { width: 375, height: 812 },
+  { width: 390, height: 844 },
+  { width: 414, height: 896 },
+  { width: 768, height: 1024 },
+  { width: 1024, height: 768 },
+  { width: 1440, height: 900 },
+] as const;
+
 test("marks the current route or homepage section in primary navigation", async ({
   page,
 }) => {
@@ -69,6 +87,41 @@ test("uses distinct palette roles for hero, booking and back-to-top actions", as
   expect(colors.hero).not.toBe(colors.booking);
 });
 
+test("keeps every public route within the viewport at supported widths", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+
+  for (const viewport of responsiveViewports) {
+    await page.setViewportSize(viewport);
+
+    for (const path of publicRoutes) {
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
+
+      const pageRoot = page.locator(".site-canvas, .legal-main, .not-found-main").first();
+      const dimensions = await pageRoot.evaluate((root) => ({
+        bodyWidth: document.body.getBoundingClientRect().width,
+        clientWidth: document.documentElement.clientWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        rootWidth: root.getBoundingClientRect().width,
+        viewportWidth: window.innerWidth,
+      }));
+
+      expect(
+        dimensions.documentWidth,
+        `${path} at ${viewport.width}px: ${JSON.stringify(dimensions)}`,
+      ).toBe(dimensions.clientWidth);
+      expect(
+        dimensions.bodyWidth,
+        `${path} at ${viewport.width}px: ${JSON.stringify(dimensions)}`,
+      ).toBe(dimensions.clientWidth);
+      expect(dimensions.viewportWidth).toBe(viewport.width);
+      expect(dimensions.rootWidth).toBe(dimensions.clientWidth);
+    }
+  }
+});
+
 test.describe("narrow mobile viewport", () => {
   test.use({ viewport: { width: 320, height: 800 } });
 
@@ -106,7 +159,7 @@ test.describe("narrow mobile viewport", () => {
     await expect(footer.getByRole("link", { name: "Back to top" })).toBeVisible();
   });
 
-  test("keeps legal page headings below the mobile header", async ({ page }) => {
+  test("keeps legal pages within the mobile viewport", async ({ page }) => {
     for (const path of ["/privacy", "/accessibility", "/service-information"]) {
       await page.goto(path);
 
@@ -120,6 +173,14 @@ test.describe("narrow mobile viewport", () => {
       });
 
       expect(positions.headingTop).toBeGreaterThanOrEqual(positions.headerBottom - 1);
+
+      const widths = await page.locator(".legal-main").evaluate((main) => ({
+        mainWidth: main.getBoundingClientRect().width,
+        viewportWidth: window.innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+      }));
+      expect(widths.mainWidth).toBe(widths.viewportWidth);
+      expect(widths.documentWidth, JSON.stringify(widths)).toBe(widths.viewportWidth);
     }
   });
 
