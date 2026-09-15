@@ -71,10 +71,6 @@
   z-index: 1;
 }
 
-.modality-card-front .card-topline {
-  margin-bottom: 0;
-}
-
 .modality-card-front-content {
   display: flex;
   flex-direction: column;
@@ -83,10 +79,6 @@
 
 .modality-card-back {
   transform: rotateY(180deg);
-}
-
-.modality-card-back .card-topline {
-  margin-bottom: 24px;
 }
 
 .modality-card-back .card-description {
@@ -105,14 +97,6 @@
 .modality-card.sage .modality-card-face { background: var(--sky-pale); }
 .modality-card.clay .modality-card-face { background: #ffe0ed; }
 .modality-card.ochre .modality-card-face { background: #fff0bd; }
-
-.modality-back-label {
-  color: var(--tone);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
-}
 
 .modality-card-cue {
   position: absolute;

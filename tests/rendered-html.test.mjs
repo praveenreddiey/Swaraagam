@@ -221,6 +221,7 @@ test("renders the site, legal pages and production security headers", async () =
   assert.match(html, /<span>01<\/span>/u);
   assert.match(html, /<span>02<\/span>/u);
   assert.match(html, /<span>03<\/span>/u);
+  assert.doesNotMatch(html, /card-number|modality-back-label|>Details<\/span>/u);
 
   for (const path of ["/privacy", "/accessibility", "/service-information"]) {
     const response = await fetchApp(path, { headers: { Accept: "text/html" } });
