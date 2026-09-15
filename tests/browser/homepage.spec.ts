@@ -124,10 +124,23 @@ test("removes optional booking and process labels without leaving layout gaps", 
     bookingHeadingMarginTop: Number.parseFloat(
       getComputedStyle(document.querySelector(".booking-closing h3")!).marginTop,
     ),
+    bookingSectionPaddingBottom: Number.parseFloat(
+      getComputedStyle(document.querySelector(".booking-section")!).paddingBottom,
+    ),
+    bookingClosingPadding: [
+      Number.parseFloat(
+        getComputedStyle(document.querySelector(".booking-closing")!).paddingTop,
+      ),
+      Number.parseFloat(
+        getComputedStyle(document.querySelector(".booking-closing")!).paddingBottom,
+      ),
+    ],
   }));
 
   expect(spacing.faqTitleMarginTop).toBe(0);
   expect(spacing.bookingHeadingMarginTop).toBe(0);
+  expect(spacing.bookingSectionPaddingBottom).toBe(0);
+  expect(spacing.bookingClosingPadding).toEqual([28, 28]);
   expect(spacing.processHeadingMarginTops).toEqual([24, 24, 24]);
 });
 
@@ -173,6 +186,23 @@ test.describe("narrow mobile viewport", () => {
     page,
   }) => {
     await page.goto("/");
+
+    const closingSpacing = await page.locator(".booking-closing").evaluate((closing) => {
+      const section = closing.closest(".booking-section");
+      if (!section) throw new Error("The booking section is missing");
+
+      const closingStyles = getComputedStyle(closing);
+      return {
+        closingPadding: [
+          Number.parseFloat(closingStyles.paddingTop),
+          Number.parseFloat(closingStyles.paddingBottom),
+        ],
+        sectionPaddingBottom: Number.parseFloat(getComputedStyle(section).paddingBottom),
+      };
+    });
+
+    expect(closingSpacing.closingPadding).toEqual([24, 24]);
+    expect(closingSpacing.sectionPaddingBottom).toBe(0);
 
     await expect(
       page.getByRole("navigation", { name: "Main menu" }),
