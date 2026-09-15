@@ -173,9 +173,9 @@
   .faq-list summary { min-height: 68px; font-size: 19px; }
   .faq-list details > p { margin-right: 0; }
   .booking-section { padding: 52px 0; }
-  .site-footer > .page-shell { padding-top: 12px; }
+  .site-footer > .page-shell { padding-top: 8px; }
   .footer-bottom {
-    min-height: 84px;
+    min-height: 72px;
     padding-inline: 36px;
   }
   .legal-hero { padding: 36px 0 42px; }
