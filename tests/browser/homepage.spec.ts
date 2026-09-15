@@ -98,6 +98,39 @@ test("uses distinct palette roles for hero, booking and back-to-top actions", as
   expect(footerBottomHeight).toBeLessThanOrEqual(66);
 });
 
+test("removes optional booking and process copy without leaving layout gaps", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await expect(page.locator(".booking-closing p")).toHaveCount(0);
+  await expect(page.getByText("Before you go…", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".privacy-note")).toHaveCount(0);
+  await expect(
+    page.getByText("Questions, gently answered", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.locator(".process-list .step-number > span:not(.line-icon)"),
+  ).toHaveCount(0);
+  await expect(page.locator(".process-list .step-copy > p")).toHaveCount(0);
+
+  const spacing = await page.evaluate(() => ({
+    faqTitleMarginTop: Number.parseFloat(
+      getComputedStyle(document.querySelector(".faq-heading .section-title")!).marginTop,
+    ),
+    processHeadingMarginTops: Array.from(
+      document.querySelectorAll(".process-list .step-copy h3"),
+    ).map((heading) => Number.parseFloat(getComputedStyle(heading).marginTop)),
+    bookingHeadingMarginTop: Number.parseFloat(
+      getComputedStyle(document.querySelector(".booking-closing h3")!).marginTop,
+    ),
+  }));
+
+  expect(spacing.faqTitleMarginTop).toBe(0);
+  expect(spacing.bookingHeadingMarginTop).toBe(0);
+  expect(spacing.processHeadingMarginTops).toEqual([24, 24, 24]);
+});
+
 test("keeps every public route within the viewport at supported widths", async ({
   page,
 }) => {

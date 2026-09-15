@@ -201,7 +201,7 @@ test("renders the site, legal pages and production security headers", async () =
   );
   for (const expectedHomeContent of [
     /application\/ld\+json/i, /"@type":"Organization"/i, /How booking works/, /Receive a personal reply/,
-    /Music Therapy Intern/, /Your request is saved securely/, /Request a session/, /Add a brief note/,
+    /Music Therapy Intern/, /Request a session/, /Add a brief note/,
     /Preferred date/, /Preferred time \(IST\)/, /A little clarity before you begin/, /What happens in the first session\?/,
     /mobile-booking-bar/, /Not a crisis service/, /Portrait space for Pragati Bhatt/, /property="og:image"/i,
     /href="\/service-information"/,
@@ -216,6 +216,8 @@ test("renders the site, legal pages and production security headers", async () =
   assert.doesNotMatch(html, /Calendly|calendly\.com/i);
   assert.doesNotMatch(html, /mailto:/i);
   assert.doesNotMatch(html, /not stored in this website/i);
+  assert.doesNotMatch(html, /Before you go…|This form is not monitored as a crisis service|Questions, gently answered/u);
+  assert.doesNotMatch(html, /<p>Begin<\/p>|<p>Explore<\/p>|<p>Grow<\/p>|<span>01<\/span>|<span>02<\/span>|<span>03<\/span>/u);
 
   for (const path of ["/privacy", "/accessibility", "/service-information"]) {
     const response = await fetchApp(path, { headers: { Accept: "text/html" } });

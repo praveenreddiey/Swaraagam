@@ -22,13 +22,11 @@ export function ProcessSection() {
 
         <ol className="process-list">
           {PROCESS_STEPS.map((step, index) => (
-            <li key={step.number} data-reveal>
+            <li key={step.title} data-reveal>
               <div className="step-number">
                 <LineIcon name={step.icon} />
-                <span>{step.number}</span>
               </div>
               <div className="step-copy">
-                <p>{step.label}</p>
                 <h3>{step.title}</h3>
                 <span>{step.text}</span>
               </div>

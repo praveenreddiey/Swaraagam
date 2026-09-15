@@ -86,7 +86,7 @@
   .process-list li:last-child { padding-bottom: 0; }
   .step-number { width: 58px; height: 58px; }
   .step-line { width: 1px; height: calc(100% - 30px); left: 29px; top: 58px; background-image: linear-gradient(to bottom, rgba(77, 103, 88, .45) 33%, transparent 0%); background-size: 1px 8px; background-repeat: repeat-y; }
-  .step-copy > p { margin-top: 3px; }
+  .step-copy h3 { margin-top: 16px; }
   .booking-section { padding: 64px 0; }
   .booking-grid { grid-template-columns: 1fr; gap: 48px; }
   .booking-intro { position: static; padding: 0; }
