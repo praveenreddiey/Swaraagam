@@ -98,7 +98,7 @@ test("uses distinct palette roles for hero, booking and back-to-top actions", as
   expect(footerBottomHeight).toBeLessThanOrEqual(66);
 });
 
-test("removes optional booking and process copy without leaving layout gaps", async ({
+test("removes optional booking and process labels without leaving layout gaps", async ({
   page,
 }) => {
   await page.goto("/");
@@ -111,7 +111,7 @@ test("removes optional booking and process copy without leaving layout gaps", as
   ).toHaveCount(0);
   await expect(
     page.locator(".process-list .step-number > span:not(.line-icon)"),
-  ).toHaveCount(0);
+  ).toHaveText(["01", "02", "03"]);
   await expect(page.locator(".process-list .step-copy > p")).toHaveCount(0);
 
   const spacing = await page.evaluate(() => ({

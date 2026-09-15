@@ -20,6 +20,7 @@ interface Modality {
 }
 
 interface ProcessStep {
+  number: string;
   icon: LineIconName;
   title: string;
   text: string;
@@ -67,16 +68,19 @@ export const MODALITIES: readonly Modality[] = [
 /** Ordered steps used to explain the therapeutic process. */
 export const PROCESS_STEPS: readonly ProcessStep[] = [
   {
+    number: "01",
     icon: "welcome",
     title: "Getting to know you",
     text: "A brief conversation to understand what brings you here and explore whether this space is right for you.",
   },
   {
+    number: "02",
     icon: "explore",
     title: "Finding what works for you",
     text: "Every person’s journey is different. Together, we shape an approach that may include conversation, music, creative expression, reflection or a thoughtful combination.",
   },
   {
+    number: "03",
     icon: "grow",
     title: "Growing at your own pace",
     text: "Change doesn’t always happen all at once. Together we notice patterns, celebrate small shifts and create space for growth.",
