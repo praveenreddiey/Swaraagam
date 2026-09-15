@@ -172,6 +172,17 @@
 .field-group input,
 .field-group select { height: 47px; }
 .field-group textarea { min-height: 88px; resize: vertical; }
+
+/*
+ * iOS WebKit currently applies a date control's horizontal padding outside
+ * its declared width. Keep the same visual inset with text-indent instead,
+ * so the native date picker remains available without widening the field.
+ */
+.field-group input[type="date"] {
+  padding-inline: 0;
+  text-indent: 14px;
+}
+
 .field-group input::placeholder,
 .field-group textarea::placeholder { color: #68706b; }
 .field-group input:focus,
