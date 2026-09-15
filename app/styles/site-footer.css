@@ -5,8 +5,8 @@
 }
 
 .site-footer > .page-shell {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .consent-field a,
@@ -48,7 +48,7 @@
 .footer-bottom {
   position: relative;
   display: flex;
-  min-height: 76px;
+  min-height: 62px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -79,8 +79,8 @@
   height: 42px;
   place-items: center;
   border-radius: 50%;
-  background: var(--sage-deep);
-  color: white;
+  background: var(--marigold);
+  color: var(--ink);
   font-size: 0;
   transition: background-color 180ms ease, transform 180ms ease;
 }
@@ -101,7 +101,8 @@
 }
 
 .site-footer .back-to-top:is(:hover, :focus-visible) {
-  background: var(--ink);
+  background: var(--clay);
+  color: white;
   transform: translateY(calc(-50% - 3px));
 }
 

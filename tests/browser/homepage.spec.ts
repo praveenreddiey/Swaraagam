@@ -74,17 +74,28 @@ test("uses distinct palette roles for hero, booking and back-to-top actions", as
       return getComputedStyle(element).backgroundColor;
     };
 
+    const backToTop = document.querySelector<HTMLElement>(".back-to-top");
+    if (!backToTop) throw new Error("Missing element: .back-to-top");
+
     return {
       hero: backgroundColor(".hero-primary-cta"),
       booking: backgroundColor(".header-booking-link"),
-      backToTop: backgroundColor(".back-to-top"),
+      backToTop: getComputedStyle(backToTop).backgroundColor,
+      backToTopText: getComputedStyle(backToTop).color,
     };
   });
 
   expect(colors.hero).toBe("rgb(23, 127, 120)");
   expect(colors.booking).toBe("rgb(120, 87, 216)");
-  expect(colors.backToTop).toBe("rgb(23, 127, 120)");
+  expect(colors.backToTop).toBe("rgb(248, 189, 50)");
+  expect(colors.backToTopText).toBe("rgb(53, 46, 73)");
   expect(colors.hero).not.toBe(colors.booking);
+
+  const footerBottomHeight = await page.locator(".footer-bottom").evaluate(
+    (footer) => footer.getBoundingClientRect().height,
+  );
+  expect(footerBottomHeight).toBeGreaterThanOrEqual(62);
+  expect(footerBottomHeight).toBeLessThanOrEqual(66);
 });
 
 test("keeps every public route within the viewport at supported widths", async ({
@@ -157,6 +168,12 @@ test.describe("narrow mobile viewport", () => {
       footer.getByText(/© \d{4} Swaraagam\. All rights reserved\./u),
     ).toBeVisible();
     await expect(footer.getByRole("link", { name: "Back to top" })).toBeVisible();
+
+    const footerBottomHeight = await footer.locator(".footer-bottom").evaluate(
+      (footerBottom) => footerBottom.getBoundingClientRect().height,
+    );
+    expect(footerBottomHeight).toBeGreaterThanOrEqual(72);
+    expect(footerBottomHeight).toBeLessThanOrEqual(76);
   });
 
   test("keeps legal pages within the mobile viewport", async ({ page }) => {
