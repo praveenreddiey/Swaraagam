@@ -180,12 +180,14 @@ test.describe("narrow mobile viewport", () => {
 
     for (const title of ["Counselling", "Arts-Based Therapy", "Music Therapy"]) {
       const card = page.getByRole("button", { name: new RegExp(title, "u") });
+      await expect(card.locator(".card-number")).toHaveCount(0);
       await expect(card).toHaveAttribute("data-interactive", "true");
       await card.click();
       await expect(card).toHaveAttribute("aria-expanded", "true");
       await expect(card).toBeVisible();
 
       const backFace = card.locator(".modality-card-back");
+      await expect(backFace.locator(".modality-back-label")).toHaveCount(0);
       await expect
         .poll(async () =>
           backFace.evaluate(

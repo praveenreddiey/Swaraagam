@@ -132,7 +132,6 @@ export function ModalityCard({ item }: ModalityCardProps) {
       <div className="modality-card-inner">
         <div className="modality-card-face modality-card-front" aria-hidden={isFlipped}>
           <div className="card-topline">
-            <span className="card-number">{item.number}</span>
             <span className="modality-icon" aria-hidden="true">
               <LineIcon name={item.icon} />
             </span>
@@ -152,10 +151,6 @@ export function ModalityCard({ item }: ModalityCardProps) {
           id={detailsId}
           aria-hidden={!isFlipped}
         >
-          <div className="card-topline">
-            <span className="card-number">{item.number}</span>
-            <span className="modality-back-label">Details</span>
-          </div>
           <p className="card-eyebrow">{item.eyebrow}</p>
           <h3>{item.title}</h3>
           <p className="card-description">{item.description}</p>
