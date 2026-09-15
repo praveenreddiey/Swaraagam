@@ -87,7 +87,7 @@
   .step-number { width: 58px; height: 58px; }
   .step-line { width: 1px; height: calc(100% - 30px); left: 29px; top: 58px; background-image: linear-gradient(to bottom, rgba(77, 103, 88, .45) 33%, transparent 0%); background-size: 1px 8px; background-repeat: repeat-y; }
   .step-copy h3 { margin-top: 16px; }
-  .booking-section { padding: 64px 0; }
+  .booking-section { padding: 64px 0 0; }
   .booking-grid { grid-template-columns: 1fr; gap: 48px; }
   .booking-intro { position: static; padding: 0; }
   .faq-section { padding: 60px 0; }
@@ -160,7 +160,7 @@
 
   .process-quote { align-items: flex-start; margin-top: 36px; padding-inline: 4px; }
   .process-quote p { text-align: left; }
-  .booking-closing { margin-top: 42px; padding-top: 24px; text-align: left; }
+  .booking-closing { margin-top: 42px; padding: 24px 0; text-align: left; }
   .about-grid { gap: 30px; }
   .philosophy-card { padding: 18px; }
   .modalities-section { padding: 52px 0 56px; }
@@ -172,7 +172,7 @@
   .faq-section { padding: 52px 0; }
   .faq-list summary { min-height: 68px; font-size: 19px; }
   .faq-list details > p { margin-right: 0; }
-  .booking-section { padding: 52px 0; }
+  .booking-section { padding: 52px 0 0; }
   .site-footer > .page-shell { padding-top: 8px; }
   .footer-bottom {
     min-height: 72px;

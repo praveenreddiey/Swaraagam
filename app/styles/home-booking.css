@@ -2,7 +2,7 @@
   position: relative;
   overflow: hidden;
   border-top: 0;
-  padding: 68px 0;
+  padding: 68px 0 0;
   background: var(--surface-booking);
 }
 
@@ -272,7 +272,7 @@
 .booking-closing {
   margin-top: 50px;
   border-top: 1px solid rgba(36, 51, 45, 0.18);
-  padding-top: 28px;
+  padding: 28px 0;
   text-align: center;
 }
 
