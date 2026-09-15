@@ -139,7 +139,10 @@
 
 @media (max-width: 560px) {
   .page-shell { width: calc(100% - 34px); }
-  .site-header { position: absolute; }
+  .site-header {
+    position: absolute;
+    width: 100%;
+  }
   .brand strong { font-size: clamp(27px, 8.5vw, 32px); }
   .brand small { font-size: 8px; }
   .brand-centered .brand-mark {
