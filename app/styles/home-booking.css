@@ -130,10 +130,12 @@
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  min-width: 0;
   gap: 14px;
 }
 
 .field-group {
+  min-width: 0;
   margin-bottom: 17px;
 }
 
@@ -155,6 +157,8 @@
 .field-group select,
 .field-group textarea {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid rgba(36, 51, 45, 0.2);
   border-radius: 3px;
   background: #fffefa;

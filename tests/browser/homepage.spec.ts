@@ -204,6 +204,17 @@ test.describe("narrow mobile viewport", () => {
     expect(closingSpacing.closingPadding).toEqual([24, 24]);
     expect(closingSpacing.sectionPaddingBottom).toBe(0);
 
+    const dateBounds = await page.locator("#preferredDate").evaluate((date) => {
+      const field = date.closest(".contact-form");
+      if (!field) throw new Error("The enquiry form is missing");
+
+      const dateBounds = date.getBoundingClientRect();
+      const formBounds = field.getBoundingClientRect();
+      return { dateRight: dateBounds.right, formRight: formBounds.right };
+    });
+
+    expect(dateBounds.dateRight).toBeLessThanOrEqual(dateBounds.formRight + 1);
+
     await expect(
       page.getByRole("navigation", { name: "Main menu" }),
     ).toBeVisible();
