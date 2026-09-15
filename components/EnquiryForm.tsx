@@ -306,11 +306,6 @@ export function EnquiryForm() {
         {isSubmitting ? "Saving securely…" : "Request a session"}
         <span aria-hidden="true">→</span>
       </button>
-      <p className="privacy-note">
-        This form is not monitored as a crisis service. Your request is saved
-        securely before the practice is notified and is retained for up to six
-        months if you do not proceed.
-      </p>
 
       <div className="form-status" aria-live="polite" aria-atomic="true">
         {formError && (

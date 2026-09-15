@@ -10,7 +10,6 @@ export function FaqSection() {
     >
       <div className="page-shell faq-grid">
         <div className="faq-heading" data-reveal>
-          <p className="section-kicker">Questions, gently answered</p>
           <h2 id="faq-title" className="section-title">
             A little clarity before you begin.
           </h2>

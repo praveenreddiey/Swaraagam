@@ -66,7 +66,6 @@ export function BookingSection() {
       </div>
 
       <div className="page-shell booking-closing" data-reveal>
-        <p>Before you go…</p>
         <h3>Reaching out can feel like the hardest step.</h3>
         <span>Thank you for considering Swaraagam.</span>
       </div>
