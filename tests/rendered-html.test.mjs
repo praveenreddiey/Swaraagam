@@ -217,7 +217,10 @@ test("renders the site, legal pages and production security headers", async () =
   assert.doesNotMatch(html, /mailto:/i);
   assert.doesNotMatch(html, /not stored in this website/i);
   assert.doesNotMatch(html, /Before you go…|This form is not monitored as a crisis service|Questions, gently answered/u);
-  assert.doesNotMatch(html, /<p>Begin<\/p>|<p>Explore<\/p>|<p>Grow<\/p>|<span>01<\/span>|<span>02<\/span>|<span>03<\/span>/u);
+  assert.doesNotMatch(html, /<p>Begin<\/p>|<p>Explore<\/p>|<p>Grow<\/p>/u);
+  assert.match(html, /<span>01<\/span>/u);
+  assert.match(html, /<span>02<\/span>/u);
+  assert.match(html, /<span>03<\/span>/u);
 
   for (const path of ["/privacy", "/accessibility", "/service-information"]) {
     const response = await fetchApp(path, { headers: { Accept: "text/html" } });
